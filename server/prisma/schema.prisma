@@ -1,0 +1,115 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id       String @id @default(uuid()) @db.Uuid
+  name     String
+  email    String @unique
+  password String
+
+  organizations OrganizationMember[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Organization {
+  id               String           @id @default(uuid()) @db.Uuid
+  name             String
+  address          String
+  gst              String?
+  subscriptionType SubscriptionType
+  expiresAt        DateTime
+
+  members   OrganizationMember[]
+  customers Customer[]
+  devices   InventoryDevice[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model OrganizationMember {
+  userId         String @db.Uuid
+  organizationId String @db.Uuid
+
+  role     Role
+  joinedAt DateTime @default(now())
+
+  user         User         @relation(fields: [userId], references: [id])
+  organization Organization @relation(fields: [organizationId], references: [id])
+
+  @@id([userId, organizationId])
+}
+
+model Customer {
+  id             String @id @default(uuid()) @db.Uuid
+  organizationId String @db.Uuid
+
+  name         String
+  aadharNumber String
+  phoneNumber  String?
+
+  organization Organization @relation(fields: [organizationId], references: [id])
+
+  dealsAsSeller InventoryDevice[] @relation("Seller")
+  dealsAsBuyer  InventoryDevice[] @relation("Buyer")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([organizationId, aadharNumber])
+}
+
+model Brand {
+  id   Int    @id @default(autoincrement())
+  name String @unique
+
+  devices InventoryDevice[]
+}
+
+model InventoryDevice {
+  id String @id @default(uuid()) @db.Uuid
+  organizationId String @db.Uuid
+  brandId        Int
+  name     String
+  colour   String
+  imei     String
+  storage  Int
+  ram Int
+  sellerId String  @db.Uuid
+  buyerId  String? @db.Uuid
+  buyPrice  Decimal  @db.Decimal(10, 2)
+  sellPrice Decimal? @db.Decimal(10, 2)
+  buyDate      DateTime
+  sellDate     DateTime?
+
+  organization Organization @relation(fields: [organizationId], references: [id])
+  brand        Brand        @relation(fields: [brandId], references: [id])
+  seller    Customer  @relation("Seller", fields: [sellerId], references: [id])
+  buyer     Customer? @relation("Buyer", fields: [buyerId], references: [id])
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+enum Role {
+  OWNER
+  EMPLOYEE
+}
+
+enum SubscriptionType {
+  FREE
+  PREMIUM
+}
