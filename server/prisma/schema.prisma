@@ -80,28 +80,29 @@ model Brand {
 }
 
 model InventoryDevice {
-  id String @id @default(uuid()) @db.Uuid
-  organizationId String @db.Uuid
+  id             String    @id @default(uuid()) @db.Uuid
+  organizationId String    @db.Uuid
   brandId        Int
-  name     String
-  colour   String
-  imei     String
-  storage  Int
-  ram Int
-  sellerId String  @db.Uuid
-  buyerId  String? @db.Uuid
-  buyPrice  Decimal  @db.Decimal(10, 2)
-  sellPrice Decimal? @db.Decimal(10, 2)
-  buyDate      DateTime
-  sellDate     DateTime?
+  name           String
+  colour         String
+  imei1          String
+  imei2          String?
+  storage        Int
+  ram            Int
+  sellerId       String    @db.Uuid
+  buyerId        String?   @db.Uuid
+  buyPrice       Decimal   @db.Decimal(10, 2)
+  sellPrice      Decimal?  @db.Decimal(10, 2)
+  buyDate        DateTime
+  sellDate       DateTime?
 
   organization Organization @relation(fields: [organizationId], references: [id])
   brand        Brand        @relation(fields: [brandId], references: [id])
-  seller    Customer  @relation("Seller", fields: [sellerId], references: [id])
-  buyer     Customer? @relation("Buyer", fields: [buyerId], references: [id])
+  seller       Customer     @relation("Seller", fields: [sellerId], references: [id])
+  buyer        Customer?    @relation("Buyer", fields: [buyerId], references: [id])
 
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 enum Role {
