@@ -17,6 +17,7 @@ model User {
   name     String
   email    String @unique
   password String
+  hasUsedTrial Boolean @default(false)
 
   organizations OrganizationMember[]
 
@@ -30,7 +31,8 @@ model Organization {
   address          String
   gst              String?
   subscriptionType SubscriptionType
-  expiresAt        DateTime
+  subscriptionStatus SubscriptionStatus
+  subscriptionEndsAt        DateTime
 
   members   OrganizationMember[]
   customers Customer[]
@@ -111,6 +113,14 @@ enum Role {
 }
 
 enum SubscriptionType {
-  FREE
+  TRIAL
+  BASIC
   PREMIUM
+}
+
+enum SubscriptionStatus {
+  TRIAL
+  ACTIVE
+  CANCELLED
+  EXPIRED
 }
