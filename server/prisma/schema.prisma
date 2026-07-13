@@ -107,6 +107,16 @@ model InventoryDevice {
   updatedAt DateTime @updatedAt
 }
 
+model VerificationRequest {
+  id String @id @default(uuid()) @db.Uuid
+  name String?
+  email String @unique
+  passwordHash String?
+  otpHash String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+}
+
 enum Role {
   OWNER
   EMPLOYEE
