@@ -4,7 +4,7 @@ import { loginSchema, signupSchema } from "./auth.types.js";
 import { addUserService, deleteVerificationDetailService, findExistingEmailService, generateVerificationIdService, getVerificationDetailService } from "./auth.service.js";
 import { generateOtp } from "../../utils/generateOtp.js";
 import { compareHash, hashValue } from "../../utils/bcrypt.js";
-import sendOtpEmail from "../../services/email.services.js";
+import sendEmail from "../../services/email.services.js";
 import { JWT_SECRET } from "../../utils/constants.js";
 
 export const verifyEmailController = async (req: Request, res: Response): Promise<any> => {
@@ -79,7 +79,7 @@ export const signupController = async (req: Request, res: Response): Promise<any
         const hashedPassword = await hashValue(password);
         const verificationId = await generateVerificationIdService(name, email, hashedPassword, hashedOtp);
 
-        sendOtpEmail(email, otp);
+        sendEmail({type: "verification-email", email, otp});
 
         res.cookie("verificationId", verificationId, {
             httpOnly: true,
