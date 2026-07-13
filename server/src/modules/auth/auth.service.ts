@@ -1,7 +1,9 @@
 import { User, VerificationRequest } from "../../generated/prisma/client.js";
 import { prisma } from "../../configs/prisma.js"
 import { addTime } from "../../utils/dateFns.js";
-import type{ SignupSchema } from "./auth.types.js";
+import type { SignupSchema } from "./auth.types.js";
+import { compareHash, hashValue } from "../../utils/bcrypt.js";
+import { AppError } from "../../utils/appError.js";
 
 export const findExistingEmailService = async (email: string): Promise<User | null> => {
     const user = prisma.user.findUnique({
@@ -12,7 +14,46 @@ export const findExistingEmailService = async (email: string): Promise<User | nu
     return user;
 }
 
-export const generateVerificationIdService = async (name: string, email: string, password: string, otp: string): Promise<string > => {
+export const addUserService = async ({ name, email, password }: SignupSchema): Promise<void> => {
+    await prisma.user.create({
+        data: {
+            name,
+            email,
+            password
+        }
+    })
+}
+
+export const verifyOtpService = async (otp: string, verificationId: string): Promise<VerificationRequest> => {
+    const verificationRequest = await getVerificationDetailService(verificationId);
+
+    if (!verificationRequest) {
+        throw new AppError(
+            "The verification request could not be found. Please request a new verification code and try again.",
+            400
+        );
+    }
+
+    if (verificationRequest.expiresAt < new Date()) {
+        throw new AppError(
+            "Your verification code has expired. Please request a new one and try again.",
+            400
+        );
+    }
+
+    const isValidOtp = await compareHash(otp, verificationRequest?.otpHash);
+
+    if (!isValidOtp) {
+        throw new AppError(
+            "The verification code you entered is incorrect. Please try again.",
+            400
+        );
+    }
+
+    return verificationRequest;
+}
+
+export const generateVerificationIdService = async (name: string, email: string, password: string, otp: string): Promise<string> => {
     const verification = await prisma.$transaction(async (tx) => {
         await tx.verificationRequest.deleteMany({
             where: {
@@ -25,7 +66,7 @@ export const generateVerificationIdService = async (name: string, email: string,
                 email,
                 passwordHash: password,
                 otpHash: otp,
-                expiresAt: addTime({minutes: 10})
+                expiresAt: addTime({ minutes: 10 })
             },
             select: {
                 id: true
@@ -36,7 +77,7 @@ export const generateVerificationIdService = async (name: string, email: string,
     return verification;
 }
 
-export const getVerificationDetailService = async (id: string) : Promise<VerificationRequest | null> => {
+export const getVerificationDetailService = async (id: string): Promise<VerificationRequest | null> => {
     const verification = await prisma.verificationRequest.findUnique({
         where: {
             id
@@ -45,17 +86,7 @@ export const getVerificationDetailService = async (id: string) : Promise<Verific
     return verification;
 }
 
-export const addUserService = async({name, email, password} : SignupSchema) : Promise<void> => {
-    await prisma.user.create({
-        data: {
-            name,
-            email,
-            password
-        }
-    }) 
-}
-
-export const deleteVerificationDetailService = async (id: string)  :Promise<void> => {
+export const deleteVerificationDetailService = async (id: string): Promise<void> => {
     await prisma.verificationRequest.delete({
         where: {
             id
