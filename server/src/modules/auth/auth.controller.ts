@@ -1,9 +1,11 @@
 import type { Request, Response } from "express";
-import { signupSchema } from "./auth.types.js";
+import jwt from "jsonwebtoken"
+import { loginSchema, signupSchema } from "./auth.types.js";
 import { addUserService, deleteVerificationDetailService, findExistingEmailService, generateVerificationIdService, getVerificationDetailService } from "./auth.service.js";
 import { generateOtp } from "../../utils/generateOtp.js";
 import { compareHash, hashValue } from "../../utils/bcrypt.js";
 import sendOtpEmail from "../../services/email.services.js";
+import { JWT_SECRET } from "../../utils/constants.js";
 
 export const verifyEmailController = async (req: Request, res: Response): Promise<any> => {
 
@@ -75,7 +77,6 @@ export const signupController = async (req: Request, res: Response): Promise<any
 
         const hashedOtp = await hashValue(otp, 10);
         const hashedPassword = await hashValue(password);
-
         const verificationId = await generateVerificationIdService(name, email, hashedPassword, hashedOtp);
 
         sendOtpEmail(email, otp);
@@ -97,4 +98,66 @@ export const signupController = async (req: Request, res: Response): Promise<any
             message: "Something went wrong. Please try again later.",
         });
     }
+}
+
+export const loginController = async (req: Request, res: Response): Promise<any> => {
+
+    const { email, password } = req.body;
+
+    const validation = loginSchema.safeParse(req.body);
+    if (!validation.success) {
+        return res.status(400).json({
+            message: "Input validation error",
+            error: validation.error.issues
+        })
+    }
+
+    try {
+
+        const user = await findExistingEmailService(email);
+
+        if (!user) {
+            return res.status(404).json({
+                message: "No account was found with this email address. Please check the email or create a new account.",
+            });
+        }
+
+        const checkPassword = await compareHash(password, user.password);
+        if (!checkPassword) {
+            return res.status(401).json({
+                message: "Incorrect password. Please try again.",
+            });
+        }
+
+        const token = jwt.sign(
+            {
+                id: user.id
+            },
+            JWT_SECRET as string,
+            {
+                expiresIn: "1d"
+            }
+        );
+
+        res.cookie("Token", token, {
+            maxAge: 1000 * 60 * 60 * 24,
+            httpOnly: true,
+            sameSite: "none"
+        });
+
+        return res.status(200).json({
+            message: "Login successful",
+            userData: {
+                name: user.name,
+                email: user.email,
+                id: user.id
+            }
+        })
+    } catch (error) {
+        return res.status(500).json({
+            message: "Internal server error",
+            error: error
+        });
+    }
+
 }
