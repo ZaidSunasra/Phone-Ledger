@@ -1,7 +1,7 @@
 import type { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken"
-import { forgotPasswordSchema, loginSchema, resetPasswordSchema, signupSchema, verifyOtpSchema } from "./auth.types.js";
-import { addUserService, deleteVerificationDetailService, findExistingEmailService, generateVerificationIdService, getVerificationDetailService, resetPasswordService, verifyOtpService } from "./auth.service.js";
+import { forgotPasswordSchema, loginSchema, resendOtpSchema, resetPasswordSchema, signupSchema, verifyOtpSchema } from "./auth.types.js";
+import { addUserService, deleteVerificationDetailService, findExistingEmailService, generateVerificationIdService, getVerificationDetailService, resetPasswordService, updateVerificationIdService, verifyOtpService } from "./auth.service.js";
 import { generateOtp } from "../../utils/generateOtp.js";
 import { compareHash, hashValue } from "../../utils/bcrypt.js";
 import sendEmail from "../../services/email.services.js";
@@ -252,6 +252,45 @@ export const resetPasswordController = async (
 
         return res.status(200).json({
             message: "Your password has been changed successfully. Please log in with your new password.",
+        });
+    } catch (error) {
+        next(error)
+    }
+}
+
+export const resendOtpController = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+): Promise<any> => {
+    const verificationId = req.cookies.verificationId;
+    const { type } = req.body;
+
+    const validation = resendOtpSchema.safeParse(req.body);
+    if (!validation.success) {
+        return res.status(400).json({
+            message: "Input validation error",
+            error: validation.error.issues
+        })
+    }
+
+    try {
+        const otp = generateOtp();
+        const hashedOtp = await hashValue(otp, 10);
+
+        const verificationData = await updateVerificationIdService(verificationId, hashedOtp);
+
+        if(new Date() < verificationData?.resendAvailableAt!){
+            throw new AppError(
+                "Please wait a minute before requesting a new verification code.", 
+                500
+            )
+        }
+
+        sendEmail({ type: type, email: verificationData?.email!, otp });
+
+        return res.status(200).json({
+            message: "Verification code has been re-sent to your email address.",
         });
     } catch (error) {
         next(error)

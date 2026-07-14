@@ -2,7 +2,7 @@ import { User, VerificationRequest } from "../../generated/prisma/client.js";
 import { prisma } from "../../configs/prisma.js"
 import { addTime } from "../../utils/dateFns.js";
 import type { SignupSchema } from "./auth.types.js";
-import { compareHash, hashValue } from "../../utils/bcrypt.js";
+import { compareHash } from "../../utils/bcrypt.js";
 import { AppError } from "../../utils/appError.js";
 
 export const findExistingEmailService = async (email: string): Promise<User | null> => {
@@ -84,7 +84,8 @@ export const generateVerificationIdService = async (name: string | null, email: 
                 email,
                 passwordHash: password,
                 otpHash: otp,
-                expiresAt: addTime({ minutes: 10 })
+                expiresAt: addTime({ minutes: 10 }),
+                resendAvailableAt: addTime({minutes: 1})
             },
             select: {
                 id: true
@@ -102,6 +103,18 @@ export const getVerificationDetailService = async (id: string): Promise<Verifica
         }
     });
     return verification;
+}
+
+export const updateVerificationIdService = async (id: string, otp: string) : Promise<VerificationRequest | null> => {
+    const verification = await prisma.verificationRequest.update({
+        where: {
+            id
+        },
+        data: {
+            otpHash: otp
+        }
+    });
+    return verification
 }
 
 export const deleteVerificationDetailService = async (id: string): Promise<void> => {
