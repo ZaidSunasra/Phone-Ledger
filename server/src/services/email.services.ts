@@ -1,6 +1,5 @@
+import { EmailJobType } from "../modules/auth/auth.types.js";
 import emailQueue from "../queues/email.queue.js";
-
-export type EmailJobType = "verification-email" | "forgot-password-email";
 
 interface SendEmailOptions {
     type: EmailJobType

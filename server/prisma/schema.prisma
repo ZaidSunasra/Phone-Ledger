@@ -113,6 +113,7 @@ model VerificationRequest {
   email String @unique
   passwordHash String?
   otpHash String
+  resendAvailableAt DateTime 
   expiresAt DateTime
   createdAt DateTime @default(now())
 }

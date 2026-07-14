@@ -1,4 +1,6 @@
-import z, { TypeOf } from "zod/v4";
+import z from "zod/v4";
+
+const EmailJobType = ["verification-email" , "forgot-password-email"]
 
 export const signupSchema = z.object({
     name: z.string(),
@@ -15,10 +17,6 @@ export const forgotPasswordSchema = z.object({
    email: z.email("Not a valid email")
 })
 
-export const verifyOtpSchema = z.object({
-    otp: z.string()
-})
-
 export const resetPasswordSchema = z.object({
     password: z.string().min(6, "Password should be greater than 6 characters"),
     confirmPassword: z.string().min(6, "Password should be greater than 6 characters")
@@ -27,9 +25,17 @@ export const resetPasswordSchema = z.object({
   path: ["confirmPassword"],
 })
 
+export const verifyOtpSchema = z.object({
+    otp: z.string()
+})
+
+export const resendOtpSchema = z.object({
+    type: z.enum(EmailJobType)
+})
 
 export type SignupSchema = z.infer<typeof signupSchema>;
 export type LoginSchema = z.infer<typeof loginSchema>;
 export type ForgotPasswordSchema = z.infer<typeof forgotPasswordSchema>;
 export type VerifyOtpSchema = z.infer<typeof verifyOtpSchema>;
 export type resetPasswordSchema = z.infer<typeof resetPasswordSchema>;
+export type EmailJobType = typeof EmailJobType[number];
