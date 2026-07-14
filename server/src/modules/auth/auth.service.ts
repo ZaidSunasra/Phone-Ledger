@@ -24,6 +24,24 @@ export const addUserService = async ({ name, email, password }: SignupSchema): P
     })
 }
 
+export const resetPasswordService = async(password: string, verificationid: string) : Promise<void> => {
+    await prisma.$transaction(async (tx) => {
+        const emailToUpdate = await tx.verificationRequest.findUnique({
+            where: {
+                id: verificationid
+            }
+        });
+        await tx.user.update({
+            where: {
+                email: emailToUpdate?.email
+            },
+            data: {
+                password
+            }
+        })
+    })
+}
+
 export const verifyOtpService = async (otp: string, verificationId: string): Promise<VerificationRequest> => {
     const verificationRequest = await getVerificationDetailService(verificationId);
 
@@ -53,14 +71,14 @@ export const verifyOtpService = async (otp: string, verificationId: string): Pro
     return verificationRequest;
 }
 
-export const generateVerificationIdService = async (name: string, email: string, password: string, otp: string): Promise<string> => {
+export const generateVerificationIdService = async (name: string | null, email: string, password: string | null, otp: string): Promise<string> => {
     const verification = await prisma.$transaction(async (tx) => {
         await tx.verificationRequest.deleteMany({
             where: {
                 email
             }
         })
-        const id = await tx.verificationRequest.create({
+        const verificationData = await tx.verificationRequest.create({
             data: {
                 name,
                 email,
@@ -72,7 +90,7 @@ export const generateVerificationIdService = async (name: string, email: string,
                 id: true
             }
         })
-        return id.id;
+        return verificationData.id;
     })
     return verification;
 }
