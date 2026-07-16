@@ -1,4 +1,4 @@
-import { EmailJobType } from "../modules/auth/auth.types.js";
+import { EmailJobType } from "zs-phone-common";
 import emailQueue from "../queues/email.queue.js";
 
 interface SendEmailOptions {
