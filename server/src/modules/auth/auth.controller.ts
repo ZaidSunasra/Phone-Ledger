@@ -278,7 +278,7 @@ export const resendOtpController = async (
         const otp = generateOtp();
         const hashedOtp = await hashValue(otp, 10);
 
-        const verificationData = await updateVerificationIdService(verificationId, hashedOtp);
+        const verificationData = await getVerificationDetailService(verificationId);
 
         if(new Date() < verificationData?.resendAvailableAt!){
             throw new AppError(
@@ -286,6 +286,8 @@ export const resendOtpController = async (
                 500
             )
         }
+
+        await updateVerificationIdService(verificationId, hashedOtp)
 
         sendEmail({ type: type, email: verificationData?.email!, otp });
 
