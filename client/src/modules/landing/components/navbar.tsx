@@ -1,8 +1,10 @@
-import { useState } from 'react';
-import { Menu, X } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { useState } from 'react'
+import { Menu, X } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { useNavigate } from 'react-router';
 
 export function Navbar() {
+  const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
@@ -23,10 +25,10 @@ export function Navbar() {
           </a>
         </div>
         <div className="hidden items-center gap-4 md:flex">
-          <Button variant="outline" className="border-gray-300 text-gray-700 hover:bg-gray-50 p-4">
+          <Button onClick={() => navigate("/login")} variant="outline" className="border-gray-300 text-gray-700 hover:bg-gray-50 p-4">
             Login
           </Button>
-          <Button className="bg-blue-600 text-white hover:bg-blue-700 p-4">
+          <Button onClick={() => navigate("/signup")} className="bg-blue-600 text-white hover:bg-blue-700 p-4">
             Get Started
           </Button>
         </div>
@@ -48,10 +50,10 @@ export function Navbar() {
               Pricing
             </a>
             <div className="space-y-2 border-t border-gray-200 pt-4">
-              <Button variant="outline" className="w-full border-gray-300 text-gray-700 hover:bg-gray-50">
+              <Button onClick={() => navigate("/login")} variant="outline" className="w-full border-gray-300 text-gray-700 hover:bg-gray-50">
                 Login
               </Button>
-              <Button className="w-full bg-blue-600 text-white hover:bg-blue-700">
+              <Button onClick={() => navigate("/signup")} className="w-full bg-blue-600 text-white hover:bg-blue-700">
                 Get Started
               </Button>
             </div>

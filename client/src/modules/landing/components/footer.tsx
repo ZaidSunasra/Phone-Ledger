@@ -1,4 +1,4 @@
-import { Mail, Phone } from 'lucide-react';
+import { Mail, Phone } from 'lucide-react'
 
 export function Footer() {
   return (
@@ -31,7 +31,7 @@ export function Footer() {
               </li>
             </ul>
           </div>
-        </div> 
+        </div>
         <div className="border-t border-gray-800 py-8">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
             <p className="text-sm text-gray-400">

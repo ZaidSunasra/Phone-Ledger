@@ -1,7 +1,10 @@
-import { ArrowRight, TrendingUp, ShoppingCart, Smartphone, IndianRupee } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { ArrowRight, TrendingUp, ShoppingCart, Smartphone, IndianRupee } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { useNavigate } from 'react-router'
 
 export function Hero() {
+  const navigate = useNavigate();
+
   return (
     <section className="relative overflow-hidden bg-linear-to-b from-white to-gray-50 px-4 py-16 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-6xl">
@@ -17,11 +20,11 @@ export function Hero() {
             </div>
 
             <div className="flex flex-col gap-4 sm:flex-row">
-              <Button size="lg" className="bg-blue-600 text-white hover:bg-blue-700 px-8 py-4">
+              <Button onClick={() => navigate("/signup")} size="lg" className="bg-blue-600 text-white hover:bg-blue-700 px-8 py-4">
                 Start Free Trial
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
-              <Button size="lg" variant="outline" className="border-gray-300 text-gray-700 hover:bg-gray-50 px-8 py-4">
+              <Button onClick={() => navigate("/login")} size="lg" variant="outline" className="border-gray-300 text-gray-700 hover:bg-gray-50 px-8 py-4">
                 Login
               </Button>
             </div>

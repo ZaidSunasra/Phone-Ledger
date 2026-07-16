@@ -1,4 +1,4 @@
-import { ShoppingCart, TrendingUp, Smartphone, Users, BarChart3, Package } from 'lucide-react';
+import { ShoppingCart, TrendingUp, Smartphone, Users, BarChart3, Package } from 'lucide-react'
 
 const features = [
   {

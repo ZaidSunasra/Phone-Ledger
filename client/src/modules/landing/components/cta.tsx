@@ -1,7 +1,10 @@
-import { ArrowRight } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { ArrowRight } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { useNavigate } from 'react-router'
 
 export function CTA() {
+  const navigate = useNavigate();
+
   return (
     <section className="py-16 sm:py-24 bg-blue-600 px-4 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-4xl text-center space-y-8">
@@ -14,11 +17,16 @@ export function CTA() {
           </p>
         </div>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <Button size="lg" className="bg-white text-blue-600 hover:bg-gray-50 px-8 py-4 font-semibold">
+          <Button
+            onClick={() => navigate("/signup")}
+            size="lg"
+            className="bg-white text-blue-600 hover:bg-gray-50 px-8 py-4 font-semibold"
+          >
             Start Free Trial
             <ArrowRight className="ml-2 h-5 w-5" />
           </Button>
           <Button
+            onClick={() => navigate("/login")}
             size="lg"
             variant="outline"
             className="border-white text-white hover:bg-blue-500 px-8 py-4 font-semibold"
