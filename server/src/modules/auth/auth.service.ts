@@ -1,7 +1,7 @@
 import { User, VerificationRequest } from "../../generated/prisma/client.js";
 import { prisma } from "../../configs/prisma.js"
 import { addTime } from "../../utils/dateFns.js";
-import type { SignupSchema } from "./auth.types.js";
+import type { SignupSchema } from "zs-phone-common";
 import { compareHash } from "../../utils/bcrypt.js";
 import { AppError } from "../../utils/appError.js";
 

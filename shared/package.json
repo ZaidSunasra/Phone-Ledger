@@ -1,0 +1,19 @@
+{
+  "name": "zs-phone-common",
+  "version": "1.0.3",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "publish": "npm publish --access=public"
+  },
+  "description": "Shared types and zod schemas for Phone Ledger SAAS",
+  "license": "ISC",
+  "author": "Zaid Sunasra",
+  "devDependencies": {
+    "typescript": "^7.0.2"
+  },
+  "dependencies": {
+    "zod": "^3.25.76"
+  }
+}

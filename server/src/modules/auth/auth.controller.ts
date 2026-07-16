@@ -1,6 +1,6 @@
 import type { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken"
-import { forgotPasswordSchema, loginSchema, resendOtpSchema, resetPasswordSchema, signupSchema, verifyOtpSchema } from "./auth.types.js";
+import { forgotPasswordSchema, loginSchema, resendOtpSchema, resetPasswordSchema, signupSchema, verifyOtpSchema } from "zs-phone-common";
 import { addUserService, deleteVerificationDetailService, findExistingEmailService, generateVerificationIdService, getVerificationDetailService, resetPasswordService, updateVerificationIdService, verifyOtpService } from "./auth.service.js";
 import { generateOtp } from "../../utils/generateOtp.js";
 import { compareHash, hashValue } from "../../utils/bcrypt.js";
