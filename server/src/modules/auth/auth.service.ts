@@ -1,7 +1,6 @@
-import { User, VerificationRequest } from "../../generated/prisma/client.js";
 import { prisma } from "../../configs/prisma.js"
 import { addTime } from "../../utils/dateFns.js";
-import type { SignupSchema } from "zs-phone-common";
+import type { SignupSchema, SendOtpOutput, User, VerificationRequest } from "zs-phone-common";
 import { compareHash } from "../../utils/bcrypt.js";
 import { AppError } from "../../utils/appError.js";
 
@@ -9,7 +8,21 @@ export const findExistingEmailService = async (email: string): Promise<User | nu
     const user = prisma.user.findUnique({
         where: {
             email: email
-        }
+        },
+        // include:{
+        //     organizations:{
+        //         select:{
+        //             organization: {
+        //                 select:{
+        //                     name: true,
+        //                     id: true,
+        //                     subscriptionStatus: true,
+        //                     subscriptionType: true
+        //                 }
+        //             }
+        //         }
+        //     }
+        // }
     });
     return user;
 }
@@ -71,7 +84,7 @@ export const verifyOtpService = async (otp: string, verificationId: string): Pro
     return verificationRequest;
 }
 
-export const generateVerificationIdService = async (name: string | null, email: string, password: string | null, otp: string): Promise<{id: string, resendAvailableAt: Date}> => {
+export const generateVerificationIdService = async (name: string | null, email: string, password: string | null, otp: string): Promise<SendOtpOutput> => {
     const verification = await prisma.$transaction(async (tx) => {
         await tx.verificationRequest.deleteMany({
             where: {

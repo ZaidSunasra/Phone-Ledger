@@ -4,13 +4,14 @@ import { toast } from "sonner";
 import { forgotPassword, login, resendOtp, resetPassword, signup, verifyEmail, verifyResetPassword } from "./auth.api";
 import { useAuth } from "@/store/auth.store";
 import { useOtpStore } from "@/store/otp.store";
+import type { LoginSuccessResponse, SendOtpSuccessResponse, SuccessResponse } from "zs-phone-common";
 
 export const useLogin = () => {
     const setUser = useAuth((state) => state.setUser);
     const navigate = useNavigate();
     return useMutation({
         mutationFn: login,
-        onSuccess: (data: any) => {
+        onSuccess: (data: LoginSuccessResponse) => {
             setUser(data.userData);
             toast.success(data.message);
             navigate("/dashboard");
@@ -28,7 +29,7 @@ export const useSignup = () => {
     const navigate = useNavigate();
     return useMutation({
         mutationFn: signup,
-        onSuccess: (data: any) => {
+        onSuccess: (data: SendOtpSuccessResponse) => {
             toast.success(data.message);
             setResendAvailableAt(data.resendAvailableAt);
             navigate("/verify-otp/email-verification")
@@ -46,7 +47,7 @@ export const useVerifyEmail = () => {
     const navigate = useNavigate();
     return useMutation({
         mutationFn: verifyEmail,
-        onSuccess: (data: any) => {
+        onSuccess: (data: SuccessResponse) => {
             toast.success(data.message);
             clearResendAvailableAt()
             navigate("/login")
@@ -64,7 +65,7 @@ export const useForgotPassword = () => {
     );
     return useMutation({
         mutationFn: forgotPassword,
-        onSuccess: (data: any) => {
+        onSuccess: (data: SendOtpSuccessResponse) => {
             toast.success(data.message);
             setResendAvailableAt(data.resendAvailableAt);
             navigate("/verify-otp/reset-password")
@@ -82,7 +83,7 @@ export const useVerifyResetPassword = () => {
     );
     return useMutation({
         mutationFn: verifyResetPassword,
-        onSuccess: (data: any) => {
+        onSuccess: (data: SuccessResponse) => {
             toast.success(data.message);
             clearResendAvailableAt()
             navigate("/reset-password")
@@ -97,7 +98,7 @@ export const useResetPassword = () => {
     const navigate = useNavigate();
     return useMutation({
         mutationFn: resetPassword,
-        onSuccess: (data: any) => {
+        onSuccess: (data: SuccessResponse) => {
             toast.success(data.message);
             navigate("/login")
         },
@@ -113,7 +114,7 @@ export const useResendOtp = () => {
     );
     return useMutation({
         mutationFn: resendOtp,
-        onSuccess: (data: any) => {
+        onSuccess: (data: SendOtpSuccessResponse) => {
             setResendAvailableAt(data.resendAvailableAt)
             toast.success(data.message);
         },

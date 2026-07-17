@@ -1,6 +1,6 @@
 import type { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken"
-import { forgotPasswordSchema, loginSchema, resendOtpSchema, resetPasswordSchema, signupSchema, verifyOtpSchema } from "zs-phone-common";
+import { forgotPasswordSchema, loginSchema, resendOtpSchema, resetPasswordSchema, signupSchema, verifyOtpSchema, ErrorResponse, LoginSuccessResponse, SendOtpSuccessResponse, SuccessResponse } from "zs-phone-common";
 import { addUserService, deleteVerificationDetailService, findExistingEmailService, generateVerificationIdService, getVerificationDetailService, resetPasswordService, updateVerificationIdService, verifyOtpService } from "./auth.service.js";
 import { generateOtp } from "../../utils/generateOtp.js";
 import { compareHash, hashValue } from "../../utils/bcrypt.js";
@@ -10,7 +10,7 @@ import { AppError } from "../../utils/appError.js";
 
 export const verifyEmailController = async (
     req: Request,
-    res: Response,
+    res: Response<SuccessResponse | ErrorResponse>,
     next: NextFunction
 ): Promise<any> => {
     const { otp } = req.body;
@@ -46,7 +46,7 @@ export const verifyEmailController = async (
 
 export const signupController = async (
     req: Request,
-    res: Response,
+    res: Response<SendOtpSuccessResponse | ErrorResponse>,
     next: NextFunction
 ): Promise<any> => {
 
@@ -94,7 +94,7 @@ export const signupController = async (
 
 export const loginController = async (
     req: Request,
-    res: Response,
+    res: Response<LoginSuccessResponse | ErrorResponse>,
     next: NextFunction
 ): Promise<any> => {
     const { email, password } = req.body;
@@ -157,7 +157,7 @@ export const loginController = async (
 
 export const forgotPasswordController = async (
     req: Request,
-    res: Response,
+    res: Response<SendOtpSuccessResponse | ErrorResponse>,
     next: NextFunction
 ): Promise<any> => {
     const { email } = req.body;
@@ -204,7 +204,7 @@ export const forgotPasswordController = async (
 
 export const verifyResetOtpController = async (
     req: Request,
-    res: Response,
+    res: Response<SuccessResponse | ErrorResponse>,
     next: NextFunction
 ): Promise<any> => {
     const { otp } = req.body;
@@ -231,7 +231,7 @@ export const verifyResetOtpController = async (
 
 export const resetPasswordController = async (
     req: Request,
-    res: Response,
+    res: Response<SuccessResponse | ErrorResponse>,
     next: NextFunction
 ): Promise<any> => {
     const { password, confirmPassword } = req.body;
@@ -262,7 +262,7 @@ export const resetPasswordController = async (
 
 export const resendOtpController = async (
     req: Request,
-    res: Response,
+    res: Response<SendOtpSuccessResponse | ErrorResponse>,
     next: NextFunction
 ): Promise<any> => {
     const verificationId = req.cookies.verificationId;
@@ -282,9 +282,9 @@ export const resendOtpController = async (
 
         const verificationData = await getVerificationDetailService(verificationId);
 
-        if(new Date() < verificationData?.resendAvailableAt!){
+        if (new Date() < verificationData?.resendAvailableAt!) {
             throw new AppError(
-                "Please wait a minute before requesting a new verification code.", 
+                "Please wait a minute before requesting a new verification code.",
                 500
             )
         }

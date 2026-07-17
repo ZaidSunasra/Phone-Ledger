@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 
-export function useResendCountdown(resendAvailableAt: number | null) {
+export function useResendCountdown(resendAvailableAt: Date | null) {
 
-    const [now, setNow] = useState(Date.now())
+    const [now, setNow] = useState<number>(Date.now())
 
     useEffect(() => {
         const interval = setInterval(() => {

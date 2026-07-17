@@ -1,4 +1,5 @@
 import z from "zod/v4";
+import { SuccessResponse, VerificationRequest } from "./common.types";
 
 const EmailJobType = ["verification-email" , "forgot-password-email"]
 
@@ -33,10 +34,30 @@ export const resendOtpSchema = z.object({
     type: z.enum(EmailJobType)
 })
 
+export type SendOtpSuccessResponse = SuccessResponse & {
+    resendAvailableAt: Date
+}
+
+export type LoginSuccessResponse = SuccessResponse & {
+    userData: {
+        name: string,
+        email: string,
+        id: string
+    }
+}
+
+export type SendOtpOutput = Pick<VerificationRequest, "resendAvailableAt" | "id">
+
 export type SignupSchema = z.infer<typeof signupSchema>;
+
 export type LoginSchema = z.infer<typeof loginSchema>;
+
 export type ForgotPasswordSchema = z.infer<typeof forgotPasswordSchema>;
+
 export type VerifyOtpSchema = z.infer<typeof verifyOtpSchema>;
+
 export type ResetPasswordSchema = z.infer<typeof resetPasswordSchema>;
+
 export type ResendOtpSchema = z.infer<typeof resendOtpSchema>;
+
 export type EmailJobType = typeof EmailJobType[number];

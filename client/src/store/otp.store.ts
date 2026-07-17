@@ -2,8 +2,8 @@ import { create } from "zustand"
 import { persist } from "zustand/middleware"
 
 interface OtpState {
-    resendAvailableAt: number | null;
-    setResendAvailableAt: (timestamp: number) => void;
+    resendAvailableAt: Date | null;
+    setResendAvailableAt: (timestamp: Date) => void;
     clearResendAvailableAt: () => void;
 }
 
