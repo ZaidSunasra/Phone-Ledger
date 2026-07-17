@@ -78,13 +78,14 @@ export const signupController = async (
 
         sendEmail({ type: "verification-email", email, otp });
 
-        res.cookie("verificationId", verificationId, {
+        res.cookie("verificationId", verificationId.id, {
             httpOnly: true,
             maxAge: 10 * 60 * 1000,
         });
 
         return res.status(200).json({
             message: "Verification code has been sent to your email address.",
+            resendAvailableAt: verificationId.resendAvailableAt
         });
     } catch (error) {
         next(error)
@@ -187,13 +188,14 @@ export const forgotPasswordController = async (
 
         sendEmail({ type: "forgot-password-email", email, otp });
 
-        res.cookie("verificationId", verificationId, {
+        res.cookie("verificationId", verificationId.id, {
             httpOnly: true,
             maxAge: 10 * 60 * 1000,
         })
 
         return res.status(200).json({
             message: "Verification code has been sent to your email address.",
+            resendAvailableAt: verificationId.resendAvailableAt
         });
     } catch (error) {
         next(error)
@@ -287,12 +289,13 @@ export const resendOtpController = async (
             )
         }
 
-        await updateVerificationIdService(verificationId, hashedOtp)
+        const verfication = await updateVerificationIdService(verificationId, hashedOtp)
 
         sendEmail({ type: type, email: verificationData?.email!, otp });
 
         return res.status(200).json({
             message: "Verification code has been re-sent to your email address.",
+            resendAvailableAt: verfication?.resendAvailableAt
         });
     } catch (error) {
         next(error)

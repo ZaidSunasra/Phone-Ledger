@@ -6,13 +6,19 @@ import { InputOTP, InputOTPGroup, InputOTPSlot, } from "@/components/ui/input-ot
 import { useParams } from "react-router";
 import { verifyOtpSchema, type VerifyOtpSchema } from "zs-phone-common";
 import { useResendOtp, useVerifyEmail, useVerifyResetPassword } from "@/api/auth/auth.mutation";
+import { useOtpStore } from "@/store/otp.store";
+import { useResendCountdown } from "@/hooks/useResendCountdown";
 
 export function VerifyOtpForm() {
 
     const { type } = useParams();
     const verifyEmail = useVerifyEmail();
     const verifyRestPassword = useVerifyResetPassword();
-    const resendOtp = useResendOtp()
+    const resendOtp = useResendOtp();
+    const resendAvailableAt = useOtpStore(
+        (state) => state.resendAvailableAt
+    )
+    const {secondsLeft, canResend} = useResendCountdown(resendAvailableAt)
 
     const form = useForm<VerifyOtpSchema>({
         resolver: zodResolver(verifyOtpSchema),
@@ -89,13 +95,14 @@ export function VerifyOtpForm() {
                     </Button>
                     <div className=" text-center">
                         <p className="text-sm text-muted-foreground">
-                            Didn't receive the code?
+                           {canResend ? `Didn't receive the code?` : `Resend OTP after ${secondsLeft}s`}
                         </p>
                         <Button
                             variant="link"
                             className="h-auto p-0"
                             type="button"
                             onClick={() => handleResendOtp()}
+                            disabled={!canResend}
                         >
                             Resend OTP
                         </Button>
