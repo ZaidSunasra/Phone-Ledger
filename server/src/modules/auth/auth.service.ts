@@ -24,7 +24,7 @@ export const addUserService = async ({ name, email, password }: SignupSchema): P
     })
 }
 
-export const resetPasswordService = async(password: string, verificationid: string) : Promise<void> => {
+export const resetPasswordService = async (password: string, verificationid: string): Promise<void> => {
     await prisma.$transaction(async (tx) => {
         const emailToUpdate = await tx.verificationRequest.findUnique({
             where: {
@@ -71,7 +71,7 @@ export const verifyOtpService = async (otp: string, verificationId: string): Pro
     return verificationRequest;
 }
 
-export const generateVerificationIdService = async (name: string | null, email: string, password: string | null, otp: string): Promise<string> => {
+export const generateVerificationIdService = async (name: string | null, email: string, password: string | null, otp: string): Promise<{id: string, resendAvailableAt: Date}> => {
     const verification = await prisma.$transaction(async (tx) => {
         await tx.verificationRequest.deleteMany({
             where: {
@@ -85,13 +85,14 @@ export const generateVerificationIdService = async (name: string | null, email: 
                 passwordHash: password,
                 otpHash: otp,
                 expiresAt: addTime({ minutes: 10 }),
-                resendAvailableAt: addTime({minutes: 1})
+                resendAvailableAt: addTime({ minutes: 1 })
             },
             select: {
-                id: true
+                id: true,
+                resendAvailableAt: true
             }
         })
-        return verificationData.id;
+        return verificationData;
     })
     return verification;
 }
@@ -105,13 +106,16 @@ export const getVerificationDetailService = async (id: string): Promise<Verifica
     return verification;
 }
 
-export const updateVerificationIdService = async (id: string, otp: string) : Promise<VerificationRequest | null> => {
+export const updateVerificationIdService = async (id: string, otp: string): Promise<VerificationRequest | null> => {
     const verification = await prisma.verificationRequest.update({
         where: {
             id
         },
         data: {
-            otpHash: otp
+            otpHash: otp,
+            createdAt: new Date(),
+            expiresAt: addTime({ minutes: 10 }),
+            resendAvailableAt: addTime({ minutes: 1 })
         }
     });
     return verification
