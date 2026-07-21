@@ -17,22 +17,41 @@ model User {
   name     String
   email    String @unique
   password String
+
   hasUsedTrial Boolean @default(false)
 
-  organizations OrganizationMember[]
+  userSubscription UserSubscription?
+
+  membership         OrganizationMember[]
+  ownedOrganizations Organization[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model UserSubscription {
+  id String @id @default(uuid()) @db.Uuid
+
+  userId String @unique @db.Uuid
+  user   User   @relation(fields: [userId], references: [id])
+
+  type     SubscriptionType
+  status   SubscriptionStatus
+  startsAt DateTime
+  endsAt   DateTime
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 model Organization {
-  id               String           @id @default(uuid()) @db.Uuid
-  name             String
-  address          String
-  gst              String?
-  subscriptionType SubscriptionType
-  subscriptionStatus SubscriptionStatus
-  subscriptionEndsAt        DateTime
+  id      String  @id @default(uuid()) @db.Uuid
+  name    String
+  address String
+  gst     String?
+
+  ownerId String @db.Uuid
+  user    User   @relation(fields: [ownerId], references: [id])
 
   members   OrganizationMember[]
   customers Customer[]
@@ -47,6 +66,7 @@ model OrganizationMember {
   organizationId String @db.Uuid
 
   role     Role
+
   joinedAt DateTime @default(now())
 
   user         User         @relation(fields: [userId], references: [id])
@@ -108,14 +128,14 @@ model InventoryDevice {
 }
 
 model VerificationRequest {
-  id String @id @default(uuid()) @db.Uuid
-  name String?
-  email String @unique
-  passwordHash String?
-  otpHash String
-  resendAvailableAt DateTime 
-  expiresAt DateTime
-  createdAt DateTime @default(now())
+  id                String   @id @default(uuid()) @db.Uuid
+  name              String?
+  email             String   @unique
+  passwordHash      String?
+  otpHash           String
+  resendAvailableAt DateTime
+  expiresAt         DateTime
+  createdAt         DateTime @default(now())
 }
 
 enum Role {
@@ -125,12 +145,10 @@ enum Role {
 
 enum SubscriptionType {
   TRIAL
-  BASIC
-  PREMIUM
+  PROFESSIONAL
 }
 
 enum SubscriptionStatus {
-  TRIAL
   ACTIVE
   CANCELLED
   EXPIRED
