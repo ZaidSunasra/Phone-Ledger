@@ -7,7 +7,7 @@ import { useParams } from "react-router";
 import { verifyOtpSchema, type VerifyOtpSchema } from "zs-phone-common";
 import { useResendOtp, useVerifyEmail, useVerifyResetPassword } from "@/api/auth/auth.mutation";
 import { useOtpStore } from "@/store/otp.store";
-import { useResendCountdown } from "@/hooks/useResendCountdown";
+import { useResendCountdown } from "@/hooks/use-resend-countdown";
 
 export function VerifyOtpForm() {
 
