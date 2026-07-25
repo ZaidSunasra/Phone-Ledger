@@ -40,3 +40,8 @@ export const getMe = async () : Promise<LoginSuccessResponse> => {
     const response = await axiosInstance.get("/auth/me");
 	return response.data;
 }
+
+export const logout = async () : Promise<SuccessResponse> => {
+    const response = await axiosInstance.post("/auth/logout");
+	return response.data;
+}

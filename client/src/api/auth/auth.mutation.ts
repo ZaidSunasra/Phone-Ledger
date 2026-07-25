@@ -1,11 +1,12 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router";
 import { toast } from "sonner";
-import { forgotPassword, login, resendOtp, resetPassword, signup, verifyEmail, verifyResetPassword } from "./auth.api";
+import { forgotPassword, login, logout, resendOtp, resetPassword, signup, verifyEmail, verifyResetPassword } from "./auth.api";
 import { useAuth } from "@/store/auth.store";
 import { useOtpStore } from "@/store/otp.store";
-import type { LoginSuccessResponse, SendOtpSuccessResponse, SuccessResponse } from "zs-phone-common";
+import type { ErrorResponse, LoginSuccessResponse, SendOtpSuccessResponse, SuccessResponse } from "zs-phone-common";
 import { useOrganization } from "@/store/organization.store";
+import type { AxiosError } from "axios";
 
 export const useLogin = () => {
     const setUser = useAuth((state) => state.setUser);
@@ -21,7 +22,7 @@ export const useLogin = () => {
             toast.success(data.message);
             navigate("/dashboard");
         },
-        onError: (error: any) => {
+        onError: (error: AxiosError<ErrorResponse>) => {
             toast.error(error.response?.data.message);
         }
     });
@@ -39,7 +40,7 @@ export const useSignup = () => {
             setResendAvailableAt(data.resendAvailableAt);
             navigate("/verify-otp/email-verification")
         },
-        onError: (error: any) => {
+        onError: (error: AxiosError<ErrorResponse>) => {
             toast.error(error.response?.data.message);
         }
     });
@@ -57,7 +58,7 @@ export const useVerifyEmail = () => {
             clearResendAvailableAt()
             navigate("/login")
         },
-        onError: (error: any) => {
+        onError: (error: AxiosError<ErrorResponse>) => {
             toast.error(error.response?.data.message);
         }
     });
@@ -75,7 +76,7 @@ export const useForgotPassword = () => {
             setResendAvailableAt(data.resendAvailableAt);
             navigate("/verify-otp/reset-password")
         },
-        onError: (error: any) => {
+        onError: (error: AxiosError<ErrorResponse>) => {
             toast.error(error.response?.data.message);
         }
     });
@@ -93,7 +94,7 @@ export const useVerifyResetPassword = () => {
             clearResendAvailableAt()
             navigate("/reset-password")
         },
-        onError: (error: any) => {
+        onError: (error: AxiosError<ErrorResponse>) => {
             toast.error(error.response?.data.message);
         }
     });
@@ -107,7 +108,7 @@ export const useResetPassword = () => {
             toast.success(data.message);
             navigate("/login")
         },
-        onError: (error: any) => {
+        onError: (error: AxiosError<ErrorResponse>) => {
             toast.error(error.response?.data.message);
         }
     });
@@ -123,7 +124,31 @@ export const useResendOtp = () => {
             setResendAvailableAt(data.resendAvailableAt)
             toast.success(data.message);
         },
-        onError: (error: any) => {
+        onError: (error: AxiosError<ErrorResponse>) => {
+            toast.error(error.response?.data.message);
+        }
+    });
+}
+
+export const useLogout = () => {
+    const navigate = useNavigate();
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: logout,
+        onSuccess: (data: SuccessResponse) => {
+            toast.success(data.message);
+
+            queryClient.clear()
+
+            useAuth.getState().clearUser()
+            useAuth.persist.clearStorage()
+
+            useOrganization.getState().clearOrganization()
+            useOrganization.persist.clearStorage()
+            
+            navigate("/");
+        },
+        onError: (error: AxiosError<ErrorResponse>) => {
             toast.error(error.response?.data.message);
         }
     });

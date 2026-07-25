@@ -7,6 +7,7 @@ import { compareHash, hashValue } from "../../utils/bcrypt.js";
 import sendEmail from "../../services/email.services.js";
 import { JWT_SECRET } from "../../utils/constants.js";
 import { AppError } from "../../utils/appError.js";
+import { cookieOptions } from "../../utils/constants.js";
 
 export const verifyEmailController = async (
     req: Request,
@@ -78,10 +79,7 @@ export const signupController = async (
 
         sendEmail({ type: "verification-email", email, otp });
 
-        res.cookie("verificationId", verificationId.id, {
-            httpOnly: true,
-            maxAge: 10 * 60 * 1000,
-        });
+        res.cookie("verificationId", verificationId.id, cookieOptions(10 * 60 * 1000));
 
         return res.status(200).json({
             message: "Verification code has been sent to your email address.",
@@ -136,11 +134,7 @@ export const loginController = async (
             }
         );
 
-        res.cookie("Token", token, {
-            maxAge: 1000 * 60 * 60 * 24,
-            httpOnly: true,
-            sameSite: "none"
-        });
+        res.cookie("Token", token, cookieOptions( 24 * 60 * 60 * 1000));
 
         return res.status(200).json({
             message: "Login successful",
@@ -192,10 +186,7 @@ export const forgotPasswordController = async (
 
         sendEmail({ type: "forgot-password-email", email, otp });
 
-        res.cookie("verificationId", verificationId.id, {
-            httpOnly: true,
-            maxAge: 10 * 60 * 1000,
-        })
+        res.cookie("verificationId", verificationId.id, cookieOptions(10 * 60 * 1000))
 
         return res.status(200).json({
             message: "Verification code has been sent to your email address.",
@@ -213,7 +204,7 @@ export const verifyResetOtpController = async (
 ): Promise<any> => {
     const { otp } = req.body;
     const verificationId = req.cookies.verificationId;
-
+    console.log(verificationId)
     const validation = verifyOtpSchema.safeParse(req.body);
     if (!validation.success) {
         return res.status(400).json({
@@ -331,6 +322,21 @@ export const getMeController = async (
                 }))
             }
         })
+    } catch (error) {
+        next(error)
+    }
+}
+
+export const logoutController = async (
+    req: Request,
+    res: Response<SuccessResponse | ErrorResponse>,
+    next: NextFunction
+): Promise<any> => {
+    try {
+        res.clearCookie("Token");
+        return res.status(200).send({
+            message: "Logout successful",
+        });
     } catch (error) {
         next(error)
     }

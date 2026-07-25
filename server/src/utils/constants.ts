@@ -13,3 +13,12 @@ export const EMAIL_PASSWORD = process.env.EMAIL_PASS;
 export const EMAIL = process.env.EMAIL_USER;
 
 export const JWT_SECRET = process.env.JWT_SECRET;
+
+export const cookieOptions = (duration: number) => {
+    return {
+        maxAge:  duration ,
+        httpOnly: true,
+        sameSite: "lax" as "lax",
+        secure: true,
+    }
+};

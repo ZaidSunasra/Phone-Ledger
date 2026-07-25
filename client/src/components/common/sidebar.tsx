@@ -1,16 +1,24 @@
-import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarRail, } from "@/components/ui/sidebar"
+import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarRail, useSidebar, } from "@/components/ui/sidebar"
 import { useAuth } from "@/store/auth.store";
-import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "../ui/select";
-import { Avatar, AvatarFallback, } from "../ui/avatar";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Avatar, AvatarFallback, } from "@/components/ui/avatar";
 import { getInitials } from "@/utils/get-initials";
 import { useOrganization } from "@/store/organization.store";
 import { navData } from "@/config/navigation";
-
+import { DropdownMenu, DropdownMenuContent,  DropdownMenuItem,  DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { LogOut, ChevronsUpDown } from "lucide-react"
+import { useLogout } from "@/api/auth/auth.mutation";
 
 const AppSidebar = () => {
 
     const user = useAuth((state) => state.user);
-    const { selectedOrganization, setSelectedOrganization } = useOrganization()
+    const logout = useLogout();
+    const { selectedOrganization, setSelectedOrganization } = useOrganization();
+    const { isMobile } = useSidebar();
+
+    const handleLogout = () => {
+        logout.mutate()
+    }
 
     const organizationOptions =
         user?.organizations.map(org => ({
@@ -62,15 +70,35 @@ const AppSidebar = () => {
             <SidebarFooter>
                 <SidebarMenu>
                     <SidebarMenuItem>
-                        <SidebarMenuButton>
-                            <Avatar className="h-8 w-8 rounded-lg">
-                                <AvatarFallback className="rounded-lg">{user?.name && getInitials(user?.name)}</AvatarFallback>
-                            </Avatar>
-                            <div className="grid flex-1 text-left text-sm leading-tight">
-                                <span className="truncate font-medium">{user?.name}</span>
-                                <span className="truncate text-xs">{user?.email}</span>
-                            </div>
-                        </SidebarMenuButton>
+                        <DropdownMenu>
+                            <DropdownMenuTrigger render={
+                                <SidebarMenuButton
+                                    size="lg"
+                                    className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+                                >
+                                    <Avatar className="h-8 w-8 rounded-lg">
+                                        <AvatarFallback className="rounded-lg">{user?.name && getInitials(user?.name)}</AvatarFallback>
+                                    </Avatar>
+                                    <div className="grid flex-1 text-left text-sm leading-tight">
+                                        <span className="truncate font-medium">{user?.name}</span>
+                                        <span className="truncate text-xs">{user?.email}</span>
+                                    </div>
+                                    <ChevronsUpDown className="ml-auto size-4" />
+                                </SidebarMenuButton>
+                            }>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent
+                                className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
+                                side={isMobile ? "bottom" : "right"}
+                                align="end"
+                                sideOffset={4}
+                            >
+                                <DropdownMenuItem onClick={handleLogout}>
+                                    <LogOut />
+                                    Log out
+                                </DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
                     </SidebarMenuItem>
                 </SidebarMenu>
             </SidebarFooter>
