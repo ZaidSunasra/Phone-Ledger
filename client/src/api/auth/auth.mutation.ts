@@ -5,14 +5,19 @@ import { forgotPassword, login, resendOtp, resetPassword, signup, verifyEmail, v
 import { useAuth } from "@/store/auth.store";
 import { useOtpStore } from "@/store/otp.store";
 import type { LoginSuccessResponse, SendOtpSuccessResponse, SuccessResponse } from "zs-phone-common";
+import { useOrganization } from "@/store/organization.store";
 
 export const useLogin = () => {
     const setUser = useAuth((state) => state.setUser);
+    const setOrganization = useOrganization((state) => state.setSelectedOrganization)
     const navigate = useNavigate();
     return useMutation({
         mutationFn: login,
         onSuccess: (data: LoginSuccessResponse) => {
             setUser(data.userData);
+            if (data.userData.organizations.length > 0) {
+                setOrganization(data.userData.organizations[0].id)
+            }
             toast.success(data.message);
             navigate("/dashboard");
         },

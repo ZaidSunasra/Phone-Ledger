@@ -1,6 +1,6 @@
 import type { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken"
-import { forgotPasswordSchema, loginSchema, resendOtpSchema, resetPasswordSchema, signupSchema, verifyOtpSchema, ErrorResponse, LoginSuccessResponse, SendOtpSuccessResponse, SuccessResponse } from "zs-phone-common";
+import { forgotPasswordSchema, loginSchema, resendOtpSchema, resetPasswordSchema, signupSchema, verifyOtpSchema, ErrorResponse, SendOtpSuccessResponse, SuccessResponse, LoginSuccessResponse, Author } from "zs-phone-common";
 import { addUserService, deleteVerificationDetailService, findExistingEmailService, generateVerificationIdService, getVerificationDetailService, resetPasswordService, updateVerificationIdService, verifyOtpService } from "./auth.service.js";
 import { generateOtp } from "../../utils/generateOtp.js";
 import { compareHash, hashValue } from "../../utils/bcrypt.js";
@@ -147,7 +147,11 @@ export const loginController = async (
             userData: {
                 name: user.name,
                 email: user.email,
-                id: user.id
+                id: user.id,
+                organizations: user.membership.map((membership) => ({
+                    id: membership.organization.id,
+                    name: membership.organization.name
+                }))
             }
         })
     } catch (error) {
@@ -297,6 +301,36 @@ export const resendOtpController = async (
             message: "Verification code has been re-sent to your email address.",
             resendAvailableAt: verfication?.resendAvailableAt
         });
+    } catch (error) {
+        next(error)
+    }
+}
+
+export const getMeController = async (
+    req: Request,
+    res: Response<LoginSuccessResponse | ErrorResponse>,
+    next: NextFunction
+): Promise<any> => {
+    const author: Author = res.locals.author;
+    try {
+        const user = await findExistingEmailService(author.email);
+        if (!user) {
+            throw new AppError(
+                "", 401
+            )
+        }
+        return res.status(200).json({
+            message: "Details fetched successfully",
+            userData: {
+                name: user?.name,
+                email: user?.email,
+                id: user.id,
+                organizations: user.membership.map((membership) => ({
+                    id: membership.organization.id,
+                    name: membership.organization.name
+                }))
+            }
+        })
     } catch (error) {
         next(error)
     }

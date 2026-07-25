@@ -35,3 +35,8 @@ export const resendOtp = async (data: ResendOtpSchema) : Promise<SendOtpSuccessR
     const response = await axiosInstance.patch("/auth/resend-otp", data);
 	return response.data;
 }
+
+export const getMe = async () : Promise<LoginSuccessResponse> => {
+    const response = await axiosInstance.get("/auth/me");
+	return response.data;
+}

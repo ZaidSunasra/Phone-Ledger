@@ -1,28 +1,30 @@
 import { prisma } from "../../configs/prisma.js"
 import { addTime } from "../../utils/dateFns.js";
-import type { SignupSchema, SendOtpOutput, User, VerificationRequest } from "zs-phone-common";
+import type { SignupSchema, SendOtpOutput, User, VerificationRequest, LoginOutput } from "zs-phone-common";
 import { compareHash } from "../../utils/bcrypt.js";
 import { AppError } from "../../utils/appError.js";
 
-export const findExistingEmailService = async (email: string): Promise<User | null> => {
+export const findExistingEmailService = async (email: string): Promise<LoginOutput | null> => {
     const user = prisma.user.findUnique({
         where: {
             email: email
         },
-        // include:{
-        //     organizations:{
-        //         select:{
-        //             organization: {
-        //                 select:{
-        //                     name: true,
-        //                     id: true,
-        //                     subscriptionStatus: true,
-        //                     subscriptionType: true
-        //                 }
-        //             }
-        //         }
-        //     }
-        // }
+        select:{
+            name: true,
+            email: true,
+            id: true,
+            password: true,
+            membership: {
+                select:{
+                    organization:{
+                        select:{
+                            name: true,
+                            id: true
+                        }
+                    }
+                }
+            }
+        }
     });
     return user;
 }
