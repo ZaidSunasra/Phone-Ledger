@@ -27,3 +27,10 @@ export type ErrorResponse = {
     message: string,
     error?: any
 }
+
+export type Author = {
+    id: string,
+    name: string,
+    email: string,
+    hasUsedTrial: boolean
+}
