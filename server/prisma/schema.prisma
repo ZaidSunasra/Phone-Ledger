@@ -70,7 +70,7 @@ model OrganizationMember {
   joinedAt DateTime @default(now())
 
   user         User         @relation(fields: [userId], references: [id])
-  organization Organization @relation(fields: [organizationId], references: [id])
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
 
   @@id([userId, organizationId])
 }
@@ -83,7 +83,7 @@ model Customer {
   aadharNumber String
   phoneNumber  String?
 
-  organization Organization @relation(fields: [organizationId], references: [id])
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
 
   dealsAsSeller InventoryDevice[] @relation("Seller")
   dealsAsBuyer  InventoryDevice[] @relation("Buyer")
@@ -118,7 +118,7 @@ model InventoryDevice {
   buyDate        DateTime
   sellDate       DateTime?
 
-  organization Organization @relation(fields: [organizationId], references: [id])
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   brand        Brand        @relation(fields: [brandId], references: [id])
   seller       Customer     @relation("Seller", fields: [sellerId], references: [id])
   buyer        Customer?    @relation("Buyer", fields: [buyerId], references: [id])
