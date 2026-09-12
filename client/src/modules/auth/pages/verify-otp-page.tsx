@@ -1,7 +1,7 @@
-import { ArrowLeft } from "lucide-react";
-import { NavLink } from "react-router";
-import OfficeSVG from "@/assets/home-office.svg";
-import { VerifyOtpForm } from "../components/verify-otp-form";
+import { ArrowLeft } from "lucide-react"
+import { NavLink } from "react-router"
+import OfficeSVG from "@/assets/home-office.svg"
+import { VerifyOtpForm } from "../components/verify-otp-form"
 
 export default function VerifyOtpPage() {
   return (
@@ -29,5 +29,5 @@ export default function VerifyOtpPage() {
         />
       </div>
     </div>
-  );
+  )
 }

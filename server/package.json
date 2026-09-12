@@ -10,7 +10,11 @@
     "watch": "tsc --watch",
     "dev": "nodemon",
     "build": "tsc && node dist/src/index.js",
-    "worker": "nodemon dist/src/workers/worker.js"
+    "worker": "nodemon dist/src/workers/worker.js",
+    "lint": "oxlint",
+    "lint:fix": "oxlint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.8.0",
@@ -35,6 +39,8 @@
     "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^26.1.1",
     "@types/nodemailer": "^8.0.1",
+    "oxlint": "^1.82.0",
+    "prettier": "^3.9.6",
     "prisma": "^7.9.1"
   },
   "allowScripts": {

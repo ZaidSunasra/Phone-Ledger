@@ -21,7 +21,7 @@ export default function ForgotPasswordPage() {
           </div>
         </div>
       </div>
-      <div className="hidden bg lg:flex justify-center items-center bg-muted">
+      <div className="bg hidden items-center justify-center bg-muted lg:flex">
         <img
           src={QuestionSVG}
           alt="Image"

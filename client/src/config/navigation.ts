@@ -1,29 +1,35 @@
-import { Boxes, ChartLine, IndianRupee, LayoutDashboard, Settings } from "lucide-react"
+import {
+  Boxes,
+  ChartLine,
+  IndianRupee,
+  LayoutDashboard,
+  Settings,
+} from "lucide-react"
 
 export const navData = [
-    {
-        icon: LayoutDashboard,
-        title: "Dashboard",
-        url: "/dashboard"
-    },
-    {
-        icon: IndianRupee,
-        title: "Sales",
-        url: "/dashboard"
-    },
-    {
-        icon: Boxes,
-        title: "Inventory",
-        url: "/dashboard"
-    },
-    {
-        icon: ChartLine,
-        title: "Analytics",
-        url: "/dashboard"
-    },
-    {
-        icon: Settings,
-        title: "Settings",
-        url: "/dashboard"
-    },
+  {
+    icon: LayoutDashboard,
+    title: "Dashboard",
+    url: "/dashboard",
+  },
+  {
+    icon: IndianRupee,
+    title: "Sales",
+    url: "/dashboard",
+  },
+  {
+    icon: Boxes,
+    title: "Inventory",
+    url: "/dashboard",
+  },
+  {
+    icon: ChartLine,
+    title: "Analytics",
+    url: "/dashboard",
+  },
+  {
+    icon: Settings,
+    title: "Settings",
+    url: "/dashboard",
+  },
 ]

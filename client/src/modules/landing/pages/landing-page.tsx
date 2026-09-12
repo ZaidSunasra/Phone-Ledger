@@ -12,7 +12,7 @@ const LandingPage = () => {
       <Hero />
       <Features />
       <Pricing />
-      <CTA/>
+      <CTA />
       <Footer />
     </div>
   )

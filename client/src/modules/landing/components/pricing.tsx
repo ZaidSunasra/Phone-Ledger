@@ -1,5 +1,5 @@
-import { Check, BadgePercent } from 'lucide-react'
-import { Button } from '@/components/ui/button'
+import { Check, BadgePercent } from "lucide-react"
+import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 const features = [
@@ -11,21 +11,21 @@ const features = [
   "Export Data",
   "IMEI Search",
   "Up to 20 staff accounts",
-];
+]
 
 type PricingCardProps = {
-  price: string;
-  period: string;
-  description: string;
-  trial: string;
-  yearly?: boolean;
-};
+  price: string
+  period: string
+  description: string
+  trial: string
+  yearly?: boolean
+}
 
 export function Pricing() {
   return (
     <section
       id="pricing"
-      className="bg-gray-50 px-4 py-16 sm:px-6 lg:px-8 sm:py-24"
+      className="bg-gray-50 px-4 py-16 sm:px-6 sm:py-24 lg:px-8"
     >
       <div className="mx-auto max-w-5xl">
         <div className="mb-16 space-y-4 text-center">
@@ -73,7 +73,7 @@ export function Pricing() {
         </p>
       </div>
     </section>
-  );
+  )
 }
 
 function PricingCard({
@@ -86,7 +86,7 @@ function PricingCard({
   return (
     <div className="relative mx-auto max-w-lg rounded-2xl border-2 border-blue-500 bg-white shadow-2xl">
       {yearly && (
-        <div className="absolute left-1/2 top-0 -translate-x-1/2 -translate-y-1/2">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2">
           <div className="flex items-center gap-2 rounded-full bg-green-600 px-4 py-1 text-sm font-semibold text-white">
             <BadgePercent className="h-4 w-4" />
             Save 10%
@@ -123,5 +123,5 @@ function PricingCard({
         </div>
       </div>
     </div>
-  );
+  )
 }

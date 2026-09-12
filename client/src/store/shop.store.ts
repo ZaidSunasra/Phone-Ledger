@@ -1,24 +1,23 @@
-import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { create } from "zustand"
+import { persist } from "zustand/middleware"
 
 interface ShopState {
-    selectedShop: string | null;
-    setSelectedShop: (id: string) => void;
-    clearShop: () => void
+  selectedShop: string | null
+  setSelectedShop: (id: string) => void
+  clearShop: () => void
 }
 
 export const useShop = create<ShopState>()(
-    persist(
-        (set) => ({
-            selectedShop: null,
+  persist(
+    (set) => ({
+      selectedShop: null,
 
-            setSelectedShop: (id) =>
-                set({ selectedShop: id }),
+      setSelectedShop: (id) => set({ selectedShop: id }),
 
-            clearShop: () => set({ selectedShop: null })
-        }),
-        {
-            name: "selected-shop",
-        }
-    )
-);
+      clearShop: () => set({ selectedShop: null }),
+    }),
+    {
+      name: "selected-shop",
+    }
+  )
+)

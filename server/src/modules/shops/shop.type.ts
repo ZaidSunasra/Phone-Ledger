@@ -1,6 +1,5 @@
 // import { SuccessResponse } from "zs-phone-common";
 
-
 // export const ShopRole = {
 //   OWNER: "OWNER",
 //  MANAGER: "MANAGER",
