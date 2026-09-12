@@ -37,7 +37,7 @@ const authenticate = async (req: Request, res: Response<ErrorResponse>, next: Ne
             id: decoded.id,
             email: user.email,
             name: user.name,
-            hasUsedTrial :user.hasUsedTrial
+            hasUsedTrial: user.trialStartedAt !== null
         };
         next();
     } catch (error) {

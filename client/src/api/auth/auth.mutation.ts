@@ -5,22 +5,18 @@ import { forgotPassword, login, logout, resendOtp, resetPassword, signup, verify
 import { useAuth } from "@/store/auth.store";
 import { useOtpStore } from "@/store/otp.store";
 import type { ErrorResponse, LoginSuccessResponse, SendOtpSuccessResponse, SuccessResponse } from "zs-phone-common";
-import { useOrganization } from "@/store/organization.store";
+import { useShop } from "@/store/shop.store";
 import type { AxiosError } from "axios";
 
 export const useLogin = () => {
     const setUser = useAuth((state) => state.setUser);
-    const setOrganization = useOrganization((state) => state.setSelectedOrganization)
     const navigate = useNavigate();
     return useMutation({
         mutationFn: login,
         onSuccess: (data: LoginSuccessResponse) => {
             setUser(data.userData);
-            if (data.userData.organizations.length > 0) {
-                setOrganization(data.userData.organizations[0].id)
-            }
             toast.success(data.message);
-            navigate("/dashboard");
+            navigate("/select-shop");
         },
         onError: (error: AxiosError<ErrorResponse>) => {
             toast.error(error.response?.data.message);
@@ -143,9 +139,9 @@ export const useLogout = () => {
             useAuth.getState().clearUser()
             useAuth.persist.clearStorage()
 
-            useOrganization.getState().clearOrganization()
-            useOrganization.persist.clearStorage()
-            
+            useShop.getState().clearShop()
+            useShop.persist.clearStorage()
+
             navigate("/");
         },
         onError: (error: AxiosError<ErrorResponse>) => {

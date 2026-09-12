@@ -42,10 +42,6 @@ export type LoginUser = {
     id: string,
     name: string,
     email: string,
-    organizations: {
-        id: string,
-        name: string
-    }[]
 }
 
 export type LoginSuccessResponse = SuccessResponse & {
@@ -57,12 +53,6 @@ export type LoginOutput = {
     name: string;
     email: string;
     password: string;
-    membership: {
-        organization: {
-            id: string;
-            name: string;
-        };
-    }[];
 };
 
 export type SendOtpOutput = Pick<VerificationRequest, "resendAvailableAt" | "id">

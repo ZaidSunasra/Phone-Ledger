@@ -3,6 +3,7 @@ import { lazy } from 'react'
 import LoginPage from '@/modules/auth/pages/login-page'
 import SignupPage from '@/modules/auth/pages/signup-page'
 import LandingPage from '@/modules/landing/pages/landing-page'
+import SelectShop from '@/modules/shop/pages/select-shop'
 const DashboardPage = lazy(() => import('@/modules/dashboard/pages/dashboard-page'))
 const VerifyOtpPage = lazy(() => import('@/modules/auth/pages/verify-otp-page'))
 const ForgotPasswordPage = lazy(() => import('@/modules/auth/pages/forgot-password-page'))
@@ -19,6 +20,7 @@ const Router = () => {
         <Route path='/forgot-password' element={<ForgotPasswordPage />} />
         <Route path='/reset-password' element={<ResetPasswordPage />} />
         <Route path='/dashboard' element={<DashboardPage />} />
+        <Route path='/select-shop' element={<SelectShop />} />
       </Routes>
     </BrowserRouter>
   )

@@ -1,15 +1,15 @@
-import { useOrganization } from "@/store/organization.store";
+import { useShop } from "@/store/shop.store";
 import axios from "axios";
 
-const URL= import.meta.env.VITE_BE_URL;
+const URL = import.meta.env.VITE_BE_URL;
 
 const axiosInstance = axios.create({ baseURL: URL, withCredentials: true });
 
 axiosInstance.interceptors.request.use((config) => {
-    const organizationId = useOrganization.getState().selectedOrganization;
+    const shopId = useShop.getState().selectedShop;
 
-    if(organizationId){
-        config.headers['x-organization-id'] = organizationId; 
+    if (shopId) {
+        config.headers['x-shop-id'] = shopId;
     }
 
     return config;

@@ -14,16 +14,6 @@ export const findExistingEmailService = async (email: string): Promise<LoginOutp
             email: true,
             id: true,
             password: true,
-            membership: {
-                select:{
-                    organization:{
-                        select:{
-                            name: true,
-                            id: true
-                        }
-                    }
-                }
-            }
         }
     });
     return user;

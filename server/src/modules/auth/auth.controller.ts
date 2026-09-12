@@ -142,10 +142,6 @@ export const loginController = async (
                 name: user.name,
                 email: user.email,
                 id: user.id,
-                organizations: user.membership.map((membership) => ({
-                    id: membership.organization.id,
-                    name: membership.organization.name
-                }))
             }
         })
     } catch (error) {
@@ -316,10 +312,6 @@ export const getMeController = async (
                 name: user?.name,
                 email: user?.email,
                 id: user.id,
-                organizations: user.membership.map((membership) => ({
-                    id: membership.organization.id,
-                    name: membership.organization.name
-                }))
             }
         })
     } catch (error) {
