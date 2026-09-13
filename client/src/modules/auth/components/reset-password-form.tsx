@@ -9,11 +9,18 @@ import {
   FieldGroup,
   FieldLabel,
 } from "@/components/ui/field"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { resetPasswordSchema, type ResetPasswordSchema } from "zs-phone-common"
 import { useResetPassword } from "@/api/auth/auth.mutation"
 
-export function ResetPasswordForm() {
+const ResetPasswordForm = () => {
   const resetPassword = useResetPassword()
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
@@ -31,82 +38,89 @@ export function ResetPasswordForm() {
   }
 
   return (
-    <form
-      id="reset-password-form"
-      onSubmit={form.handleSubmit(onSubmit)}
-      className="space-y-6"
-    >
-      <FieldGroup>
-        <div className="space-y-1 text-center">
-          <h1 className="text-2xl font-semibold tracking-tight">
-            Create New Password
-          </h1>
-          <p className="text-sm text-muted-foreground">
-            Choose a strong password for your account.
-          </p>
-        </div>
-        <Controller
-          control={form.control}
-          name="password"
-          render={({ field, fieldState }) => (
-            <Field data-invalid={fieldState.invalid}>
-              <FieldLabel htmlFor={field.name}>New Password</FieldLabel>
-              <div className="relative">
-                <Input
-                  id={field.name}
-                  type={showPassword ? "text" : "password"}
-                  placeholder="Enter new password"
-                  {...field}
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword((prev) => !prev)}
-                  className="absolute top-1/2 right-3 -translate-y-1/2"
-                >
-                  {showPassword ? (
-                    <EyeOff className="size-4" />
-                  ) : (
-                    <Eye className="size-4" />
-                  )}
-                </button>
-              </div>
-              <FieldError errors={[form.formState.errors.password]} />
-            </Field>
-          )}
-        />
-        <Controller
-          control={form.control}
-          name="confirmPassword"
-          render={({ field, fieldState }) => (
-            <Field data-invalid={fieldState.invalid}>
-              <FieldLabel htmlFor={field.name}>Confirm Password</FieldLabel>
-              <div className="relative">
-                <Input
-                  id={field.name}
-                  type={showConfirmPassword ? "text" : "password"}
-                  placeholder="Confirm password"
-                  {...field}
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowConfirmPassword((prev) => !prev)}
-                  className="absolute top-1/2 right-3 -translate-y-1/2"
-                >
-                  {showConfirmPassword ? (
-                    <EyeOff className="size-4" />
-                  ) : (
-                    <Eye className="size-4" />
-                  )}
-                </button>
-              </div>
-              <FieldError errors={[form.formState.errors.confirmPassword]} />
-            </Field>
-          )}
-        />
-        <Button type="submit" className="w-full">
-          Reset Password
-        </Button>
-      </FieldGroup>
-    </form>
+    <Card className="w-full">
+      <CardHeader>
+        <CardTitle className="text-2xl"> Create New Password</CardTitle>
+        <CardDescription>
+          Choose a strong password for your account.
+        </CardDescription>
+      </CardHeader>
+
+      <CardContent>
+        <form
+          id="reset-password-form"
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="space-y-6"
+        >
+          <FieldGroup>
+            <Controller
+              control={form.control}
+              name="password"
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor={field.name}>New Password</FieldLabel>
+                  <div className="relative">
+                    <Input
+                      id={field.name}
+                      type={showPassword ? "text" : "password"}
+                      placeholder="Enter new password"
+                      {...field}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword((prev) => !prev)}
+                      className="absolute top-1/2 right-3 -translate-y-1/2"
+                    >
+                      {showPassword ? (
+                        <EyeOff className="size-4" />
+                      ) : (
+                        <Eye className="size-4" />
+                      )}
+                    </button>
+                  </div>
+                  <FieldError errors={[form.formState.errors.password]} />
+                </Field>
+              )}
+            />
+            <Controller
+              control={form.control}
+              name="confirmPassword"
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor={field.name}>Confirm Password</FieldLabel>
+                  <div className="relative">
+                    <Input
+                      id={field.name}
+                      type={showConfirmPassword ? "text" : "password"}
+                      placeholder="Confirm password"
+                      {...field}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowConfirmPassword((prev) => !prev)}
+                      className="absolute top-1/2 right-3 -translate-y-1/2"
+                    >
+                      {showConfirmPassword ? (
+                        <EyeOff className="size-4" />
+                      ) : (
+                        <Eye className="size-4" />
+                      )}
+                    </button>
+                  </div>
+                  <FieldError
+                    errors={[form.formState.errors.confirmPassword]}
+                  />
+                </Field>
+              )}
+            />
+            <Button type="submit" className="w-full">
+              Reset Password
+            </Button>
+          </FieldGroup>
+        </form>
+      </CardContent>
+    </Card>
   )
 }
+
+export default ResetPasswordForm
