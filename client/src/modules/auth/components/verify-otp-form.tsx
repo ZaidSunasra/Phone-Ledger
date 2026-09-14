@@ -70,7 +70,7 @@ const VerifyOtpForm = () => {
           Enter the 6-digit verification code sent to your email address.
         </CardDescription>
       </CardHeader>
-      
+
       <CardContent>
         <form
           id="verify-otp-form"

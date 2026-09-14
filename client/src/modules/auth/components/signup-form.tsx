@@ -44,7 +44,7 @@ const SignupForm = () => {
           Fill in the form below to create your account
         </CardDescription>
       </CardHeader>
-      
+
       <CardContent>
         <form
           id="signup-form"

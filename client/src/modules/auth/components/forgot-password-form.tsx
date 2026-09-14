@@ -44,7 +44,7 @@ const ForgotPasswordForm = () => {
           Enter your email address to receive a verification code.
         </CardDescription>
       </CardHeader>
-      
+
       <CardContent>
         <form
           id="forgot-password-form"
