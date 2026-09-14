@@ -7,7 +7,7 @@ export const createShopController = async (
   res: Response<SuccessResponse | ErrorResponse>,
   next: NextFunction,
 ): Promise<any> => {
-  const { name, gst, address } = req.body
+  const { name, gst, address, phoneNumber } = req.body
   const author: Author = res.locals.author
 
   const validation = addShopSchema.safeParse(req.body)
@@ -19,7 +19,7 @@ export const createShopController = async (
   }
 
   try {
-    await createShopService({ name, address, gst }, author)
+    await createShopService({ name, address, gst, phoneNumber }, author)
 
     res.status(201).json({
       message:

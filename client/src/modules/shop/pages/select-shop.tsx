@@ -86,7 +86,7 @@ const SelectShop = () => {
           })}
           <div>
             <NavLink
-              to="/add/shop"
+              to="/add-shop"
               className="group flex h-full min-h-20 w-full items-center gap-4 rounded-xl border border-dashed bg-background px-4 py-4 text-left shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/40 hover:bg-primary/5 hover:shadow-md"
             >
               <div className="flex size-11 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary transition-colors duration-200 group-hover:bg-primary group-hover:text-primary-foreground">

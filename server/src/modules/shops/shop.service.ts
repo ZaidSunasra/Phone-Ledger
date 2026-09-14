@@ -5,21 +5,25 @@ import { AppError } from '../../utils/appError.js'
 import { AddShop, Author, GetShopOutput } from 'zs-phone-common'
 
 export const createShopService = async (
-  { name, address, gst }: AddShop,
+  { name, address, gst, phoneNumber }: AddShop,
   author: Author,
 ): Promise<void> => {
   await prisma.$transaction(async (tx) => {
     let subscription = await tx.subscription.findFirst({
       where: {
         userId: author.id,
-        plan: {
-          code: 'free',
+        status: 'ACTIVE',
+        endsAt: {
+          gt: new Date(),
         },
+      },
+      orderBy: {
+        endsAt: 'desc',
       },
     })
 
-    if (!subscription) {
-      const freePlan = await tx.plan.findFirst({
+    if (!subscription && !author.hasUsedTrial) {
+      const freePlan = await tx.plan.findUnique({
         where: {
           code: 'free',
         },
@@ -27,13 +31,21 @@ export const createShopService = async (
           id: true,
         },
       })
+
+      if (!freePlan) {
+        throw new AppError('Free plan is not configured.', 500)
+      }
+
+      const now = new Date()
+      const trialEndsAt = endOfDay(addTime({ days: 15 }))
+
       subscription = await tx.subscription.create({
         data: {
           userId: author.id,
-          planId: freePlan ? freePlan?.id : '',
+          planId: freePlan.id,
           status: 'ACTIVE',
-          startsAt: startOfDay(new Date()),
-          endsAt: endOfDay(addTime({ days: 15 })),
+          startsAt: startOfDay(now),
+          endsAt: trialEndsAt,
         },
       })
 
@@ -42,13 +54,13 @@ export const createShopService = async (
           id: author.id,
         },
         data: {
-          trialStartedAt: new Date(),
-          trialEndsAt: endOfDay(addTime({ days: 15 })),
+          trialStartedAt: now,
+          trialEndsAt: trialEndsAt,
         },
       })
     }
 
-    if (subscription.status !== 'ACTIVE' || subscription.endsAt < new Date()) {
+    if (!subscription) {
       throw new AppError(
         'Your subscription has expired. Please renew it to create another shop.',
         403,
@@ -57,9 +69,10 @@ export const createShopService = async (
 
     const shop = await tx.shop.create({
       data: {
-        name,
-        address,
-        gst,
+        name: name.trim(),
+        address: address?.trim() || null,
+        gst: gst?.trim() || null,
+        phoneNumber: phoneNumber?.trim() || null,
         ownerId: author.id,
       },
     })

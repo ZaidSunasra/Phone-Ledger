@@ -4,7 +4,7 @@ import { createShopController, getShopsController } from './shop.controller.js'
 
 const shopRouter = express.Router()
 
-shopRouter.post('/create', authenticate, createShopController)
+shopRouter.post('/', authenticate, createShopController)
 shopRouter.get('/', authenticate, getShopsController)
 
 export default shopRouter
