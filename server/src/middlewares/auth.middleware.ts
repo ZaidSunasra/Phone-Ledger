@@ -24,12 +24,18 @@ const authenticate = async (
       where: {
         id: decoded.id,
       },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        trialStartedAt: true,
+      },
     })
     if (!user) {
       throw new AppError('User not found', 401)
     }
     res.locals.author = {
-      id: decoded.id,
+      id: user.id,
       email: user.email,
       name: user.name,
       hasUsedTrial: user.trialStartedAt !== null,
