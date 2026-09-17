@@ -1,3 +1,5 @@
+import { PlanCode, SubscriptionStatus } from "./enums";
+
 export type User = {
     name: string;
     email: string;
@@ -20,6 +22,30 @@ export type VerificationRequest = {
     expiresAt: Date;
     verifiedAt: Date | null;
 }
+
+export type Subscription = {
+    planId: string;
+    id: string;
+    userId: string;
+    status: SubscriptionStatus;
+    createdAt: Date;
+    updatedAt: Date;
+    startsAt: Date;
+    endsAt: Date;
+    cancelledAt: Date | null;
+}
+
+export type Plan = {
+    id: string;
+    createdAt: Date;
+    updatedAt: Date;
+    code: PlanCode;
+    name: string;
+    price: number;
+    billingDays: number;
+    maxShops: number;
+    maxMembers: number;
+};
 
 export type SuccessResponse = {
     message: string

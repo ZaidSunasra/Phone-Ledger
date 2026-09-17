@@ -1,13 +1,6 @@
 import z from "zod/v4";
 import { SuccessResponse } from "./common.types";
-
-export const ShopRole = {
-    OWNER: "OWNER",
-    MANAGER: "MANAGER",
-    EMPLOYEE: "EMPLOYEE",
-} as const
-
-export type ShopRole = (typeof ShopRole)[keyof typeof ShopRole]
+import { ShopRole } from "./enums";
 
 export const addShopSchema = z.object({
     name: z.string().min(2, "Name is required and should be atleast 2 character long"),
