@@ -1,5 +1,6 @@
 import z from "zod/v4";
 import { SuccessResponse, VerificationRequest } from "./common.types";
+import { PlanCode } from "./enums";
 
 const EmailJobType = ["verification-email", "forgot-password-email"]
 
@@ -42,6 +43,7 @@ export type LoginUser = {
     id: string,
     name: string,
     email: string,
+    currentPlan: PlanCode
 }
 
 export type LoginSuccessResponse = SuccessResponse & {
@@ -53,6 +55,11 @@ export type LoginOutput = {
     name: string;
     email: string;
     password: string;
+    subscription: {
+        plan: {
+            code: PlanCode
+        }
+    }[]
 };
 
 export type SendOtpOutput = Pick<VerificationRequest, "resendAvailableAt" | "id">

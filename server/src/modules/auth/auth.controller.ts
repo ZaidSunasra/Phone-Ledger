@@ -164,6 +164,7 @@ export const loginController = async (
         name: user.name,
         email: user.email,
         id: user.id,
+        currentPlan: user.subscription[0]?.plan?.code ?? 'NO PLAN',
       },
     })
   } catch (error) {
@@ -329,6 +330,7 @@ export const getMeController = async (
         name: user?.name,
         email: user?.email,
         id: user.id,
+        currentPlan: user.subscription[0]?.plan?.code ?? 'NO PLAN',
       },
     })
   } catch (error) {

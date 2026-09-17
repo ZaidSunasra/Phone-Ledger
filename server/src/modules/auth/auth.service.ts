@@ -15,6 +15,24 @@ export const findExistingEmailService = async (email: string): Promise<LoginOutp
       email: true,
       id: true,
       password: true,
+      subscription: {
+        where: {
+          status: 'ACTIVE',
+          endsAt: {
+            gt: new Date(),
+          },
+        },
+        orderBy: {
+          endsAt: 'desc',
+        },
+        select: {
+          plan: {
+            select: {
+              code: true,
+            },
+          },
+        },
+      },
     },
   })
   return user
