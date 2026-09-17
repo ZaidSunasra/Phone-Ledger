@@ -8,8 +8,10 @@ import { FetchPlans } from "@/api/plans/plan.queries"
 import PricingCard from "../components/pricing-card"
 import { useAuth } from "@/store/auth.store"
 import { useNavigate } from "react-router"
+import { useQueryClient } from "@tanstack/react-query"
 
 const SelectPlanPage = () => {
+  const queryClient = useQueryClient()
   const { data, isPending, isError } = FetchPlans()
   const { mutateAsync: createOrder, isPending: isCreatingOrder } =
     useCreatePaymentOrder()
@@ -46,6 +48,7 @@ const SelectPlanPage = () => {
           try {
             const result = await verifyPayment(response)
             if (result.payment.status === "SUCCESS") {
+              queryClient.refetchQueries({ queryKey: ["me"] })
               navigate("/dashboard")
             } else {
               navigate("/payment-failed")
