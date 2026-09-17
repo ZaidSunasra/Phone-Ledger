@@ -3,6 +3,7 @@ import { addTime } from '../../utils/dateFns.js'
 import type { SignupSchema, SendOtpOutput, VerificationRequest, LoginOutput } from 'zs-phone-common'
 import { compareHash } from '../../utils/bcrypt.js'
 import { AppError } from '../../utils/appError.js'
+import { endOfDay } from 'date-fns'
 
 export const findExistingEmailService = async (email: string): Promise<LoginOutput | null> => {
   const user = prisma.user.findUnique({
@@ -20,12 +21,33 @@ export const findExistingEmailService = async (email: string): Promise<LoginOutp
 }
 
 export const addUserService = async ({ name, email, password }: SignupSchema): Promise<void> => {
-  await prisma.user.create({
-    data: {
-      name,
-      email,
-      password,
-    },
+  await prisma.$transaction(async (tx) => {
+    const user = await tx.user.create({
+      data: {
+        name,
+        email,
+        password,
+        trialStartedAt: new Date(),
+        trialEndsAt: endOfDay(addTime({ days: 15 })),
+      },
+    })
+    const plan = await tx.plan.findUnique({
+      where: {
+        code: 'FREE',
+      },
+    })
+    if (!plan) {
+      throw new AppError('Free Plan is not configured', 409)
+    }
+    await tx.subscription.create({
+      data: {
+        userId: user.id,
+        planId: plan?.id,
+        startsAt: new Date(),
+        endsAt: endOfDay(addTime({ days: 15 })),
+        status: 'ACTIVE',
+      },
+    })
   })
 }
 
