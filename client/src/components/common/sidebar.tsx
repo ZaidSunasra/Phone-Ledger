@@ -19,9 +19,10 @@ import {
   DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { LogOut, ChevronsUpDown, Repeat2 } from "lucide-react"
+import { LogOut, ChevronsUpDown, Repeat2, SparklesIcon } from "lucide-react"
 import { useLogout } from "@/api/auth/auth.mutation"
 import { useNavigate } from "react-router"
 
@@ -83,6 +84,13 @@ const AppSidebar = () => {
                 align="end"
                 sideOffset={4}
               >
+                <DropdownMenuGroup>
+                  <DropdownMenuItem onClick={() => navigate("/upgrade-plan")}>
+                    <SparklesIcon />
+                    Upgrade Plan
+                  </DropdownMenuItem>
+                </DropdownMenuGroup>
+                <DropdownMenuSeparator />
                 <DropdownMenuGroup>
                   <DropdownMenuItem onClick={() => navigate("/select-shop")}>
                     <Repeat2 />

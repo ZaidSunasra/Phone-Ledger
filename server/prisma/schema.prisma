@@ -80,7 +80,7 @@ model Plan {
   id String @id @default(uuid()) @db.Uuid
 
   name String
-  code String @unique
+  code PlanCode @unique
 
   price       Decimal @db.Decimal(10, 2)
   billingDays Int
@@ -89,6 +89,7 @@ model Plan {
   maxMembers Int
 
   subscriptions Subscription[]
+  payments      Payment[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -99,6 +100,7 @@ model Payment {
 
   userId         String  @db.Uuid
   subscriptionId String? @db.Uuid
+  planId         String  @db.Uuid
 
   amount   Decimal @db.Decimal(10, 2)
   currency String  @default("INR")
@@ -106,7 +108,7 @@ model Payment {
   status PaymentStatus
 
   razorpayPaymentId String? @unique
-  razorpayOrderId   String?
+  razorpayOrderId   String? @unique
   razorpaySignature String?
 
   paidAt DateTime?
@@ -115,11 +117,24 @@ model Payment {
 
   subscription Subscription? @relation(fields: [subscriptionId], references: [id])
 
+  plan Plan @relation(fields: [planId], references: [id])
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([userId])
   @@index([subscriptionId])
+}
+
+model RazorpayWebhookEvent {
+  id String @id @default(uuid()) @db.Uuid
+
+  eventId   String @unique
+  eventType String
+
+  processedAt DateTime?
+
+  createdAt DateTime @default(now())
 }
 
 model ShopMember {
@@ -228,9 +243,10 @@ model VerificationRequest {
   @@index([expiresAt])
 }
 
-enum SubscriptionType {
-  TRIAL
-  BASIC
+enum PlanCode {
+  FREE
+  BASIC_MONTHLY
+  BASIC_YEARLY
 }
 
 enum SubscriptionStatus {
