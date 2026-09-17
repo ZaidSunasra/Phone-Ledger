@@ -1,6 +1,12 @@
 import { NextFunction, Request, Response } from 'express'
 import { createShopService, getShopsService } from './shop.service.js'
-import { addShopSchema, Author, ErrorResponse, SuccessResponse } from 'zs-phone-common'
+import {
+  addShopSchema,
+  Author,
+  ErrorResponse,
+  SuccessResponse,
+  ActiveSubscription,
+} from 'zs-phone-common'
 
 export const createShopController = async (
   req: Request,
@@ -9,7 +15,7 @@ export const createShopController = async (
 ): Promise<any> => {
   const { name, gst, address, phoneNumber } = req.body
   const author: Author = res.locals.author
-
+  const activeSubscription: ActiveSubscription = res.locals.activeSubscription
   const validation = addShopSchema.safeParse(req.body)
   if (!validation.success) {
     return res.status(400).json({
@@ -19,7 +25,7 @@ export const createShopController = async (
   }
 
   try {
-    await createShopService({ name, address, gst, phoneNumber }, author)
+    await createShopService({ name, address, gst, phoneNumber }, author, activeSubscription)
 
     res.status(201).json({
       message:
