@@ -223,7 +223,7 @@ export const verifyResetOtpController = async (
 ): Promise<any> => {
   const { otp } = req.body
   const verificationId = req.cookies.verificationId
-  console.log(verificationId)
+
   const validation = verifyOtpSchema.safeParse(req.body)
   if (!validation.success) {
     return res.status(400).json({
