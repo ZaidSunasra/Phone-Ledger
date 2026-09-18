@@ -116,6 +116,15 @@ export const verifyOtpService = async (
     throw new AppError('The verification code you entered is incorrect. Please try again.', 400)
   }
 
+  prisma.verificationRequest.update({
+    where: {
+      id: verificationId,
+    },
+    data: {
+      verifiedAt: new Date(),
+    },
+  })
+
   return verificationRequest
 }
 
