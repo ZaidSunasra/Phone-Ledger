@@ -3,7 +3,7 @@ import type {
   CreatePaymentOrderSuccessResponse,
   VerifyPayment,
   VerifyPaymentSuccessResponse,
-} from "zs-phone-common"
+} from "@phone-ledger/shared"
 import axiosInstance from "../axiosInstance"
 
 export const createPaymentOrder = async (

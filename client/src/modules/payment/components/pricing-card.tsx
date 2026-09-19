@@ -1,6 +1,6 @@
 import { Check } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import type { Plan } from "zs-phone-common"
+import type { Plan } from "@phone-ledger/shared"
 
 const PricingCard = ({
   plan,

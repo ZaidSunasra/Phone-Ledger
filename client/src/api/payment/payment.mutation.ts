@@ -1,7 +1,7 @@
 import type { AxiosError } from "axios"
 import { useMutation } from "@tanstack/react-query"
 import { toast } from "sonner"
-import type { ErrorResponse } from "zs-phone-common"
+import type { ErrorResponse } from "@phone-ledger/shared"
 import { createPaymentOrder, verifyPayment } from "./payment.api"
 
 export const useCreatePaymentOrder = () => {

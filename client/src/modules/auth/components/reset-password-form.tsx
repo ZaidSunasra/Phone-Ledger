@@ -17,7 +17,10 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
-import { resetPasswordSchema, type ResetPasswordSchema } from "zs-phone-common"
+import {
+  resetPasswordSchema,
+  type ResetPasswordSchema,
+} from "@phone-ledger/shared"
 import { useResetPassword } from "@/api/auth/auth.mutation"
 
 const ResetPasswordForm = () => {

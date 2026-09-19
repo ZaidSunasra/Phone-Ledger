@@ -11,7 +11,7 @@
     "publish": "npm publish --access=public",
     "lint": "oxlint .",
     "lint:fix": "oxlint --fix .",
-     "format": "prettier --write .",
+    "format": "prettier --write .",
     "format:check": "prettier --check ."
   },
   "description": "Shared types and zod schemas for Phone Ledger SAAS",

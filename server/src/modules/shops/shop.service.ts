@@ -1,11 +1,16 @@
-import { prisma } from '../../configs/prisma.js'
-import { ActiveSubscription, AddShop, Author, GetShopOutput } from 'zs-phone-common'
-import { AppError } from '../../utils/appError.js'
+import { prisma } from "../../configs/prisma.js"
+import {
+  ActiveSubscription,
+  AddShop,
+  Author,
+  GetShopOutput,
+} from "@phone-ledger/shared"
+import { AppError } from "../../utils/appError.js"
 
 export const createShopService = async (
   { name, address, gst, phoneNumber }: AddShop,
   author: Author,
-  activeSubscription: ActiveSubscription,
+  activeSubscription: ActiveSubscription
 ): Promise<void> => {
   await prisma.$transaction(async (tx) => {
     const shopCount = await tx.shop.count({
@@ -15,8 +20,8 @@ export const createShopService = async (
     })
     if (shopCount >= activeSubscription.plan.maxShops) {
       throw new AppError(
-        'Shop limit reached for your current plan. Upgrade your plan to add more shops.',
-        402,
+        "Shop limit reached for your current plan. Upgrade your plan to add more shops.",
+        402
       )
     }
     const shop = await tx.shop.create({
@@ -32,13 +37,15 @@ export const createShopService = async (
       data: {
         userId: author.id,
         shopId: shop.id,
-        role: 'OWNER',
+        role: "OWNER",
       },
     })
   })
 }
 
-export const getShopsService = async (author: Author): Promise<GetShopOutput | null> => {
+export const getShopsService = async (
+  author: Author
+): Promise<GetShopOutput | null> => {
   const shops = await prisma.user.findUnique({
     where: {
       id: author.id,

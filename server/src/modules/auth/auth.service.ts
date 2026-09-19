@@ -1,11 +1,18 @@
-import { prisma } from '../../configs/prisma.js'
-import { addTime } from '../../utils/dateFns.js'
-import type { SignupSchema, SendOtpOutput, VerificationRequest, LoginOutput } from 'zs-phone-common'
-import { compareHash } from '../../utils/bcrypt.js'
-import { AppError } from '../../utils/appError.js'
-import { endOfDay } from 'date-fns'
+import { prisma } from "../../configs/prisma.js"
+import { addTime } from "../../utils/dateFns.js"
+import type {
+  SignupSchema,
+  SendOtpOutput,
+  VerificationRequest,
+  LoginOutput,
+} from "@phone-ledger/shared"
+import { compareHash } from "../../utils/bcrypt.js"
+import { AppError } from "../../utils/appError.js"
+import { endOfDay } from "date-fns"
 
-export const findExistingEmailService = async (email: string): Promise<LoginOutput | null> => {
+export const findExistingEmailService = async (
+  email: string
+): Promise<LoginOutput | null> => {
   const user = prisma.user.findUnique({
     where: {
       email: email,
@@ -17,13 +24,13 @@ export const findExistingEmailService = async (email: string): Promise<LoginOutp
       password: true,
       subscription: {
         where: {
-          status: 'ACTIVE',
+          status: "ACTIVE",
           endsAt: {
             gt: new Date(),
           },
         },
         orderBy: {
-          endsAt: 'desc',
+          endsAt: "desc",
         },
         select: {
           plan: {
@@ -38,7 +45,11 @@ export const findExistingEmailService = async (email: string): Promise<LoginOutp
   return user
 }
 
-export const addUserService = async ({ name, email, password }: SignupSchema): Promise<void> => {
+export const addUserService = async ({
+  name,
+  email,
+  password,
+}: SignupSchema): Promise<void> => {
   await prisma.$transaction(async (tx) => {
     const user = await tx.user.create({
       data: {
@@ -51,11 +62,11 @@ export const addUserService = async ({ name, email, password }: SignupSchema): P
     })
     const plan = await tx.plan.findUnique({
       where: {
-        code: 'FREE',
+        code: "FREE",
       },
     })
     if (!plan) {
-      throw new AppError('Free Plan is not configured', 409)
+      throw new AppError("Free Plan is not configured", 409)
     }
     await tx.subscription.create({
       data: {
@@ -63,7 +74,7 @@ export const addUserService = async ({ name, email, password }: SignupSchema): P
         planId: plan?.id,
         startsAt: new Date(),
         endsAt: endOfDay(addTime({ days: 15 })),
-        status: 'ACTIVE',
+        status: "ACTIVE",
       },
     })
   })
@@ -71,7 +82,7 @@ export const addUserService = async ({ name, email, password }: SignupSchema): P
 
 export const resetPasswordService = async (
   password: string,
-  verificationid: string,
+  verificationid: string
 ): Promise<void> => {
   await prisma.$transaction(async (tx) => {
     const emailToUpdate = await tx.verificationRequest.findUnique({
@@ -92,28 +103,31 @@ export const resetPasswordService = async (
 
 export const verifyOtpService = async (
   otp: string,
-  verificationId: string,
+  verificationId: string
 ): Promise<VerificationRequest> => {
   const verificationRequest = await getVerificationDetailService(verificationId)
 
   if (!verificationRequest) {
     throw new AppError(
-      'The verification request could not be found. Please request a new verification code and try again.',
-      400,
+      "The verification request could not be found. Please request a new verification code and try again.",
+      400
     )
   }
 
   if (verificationRequest.expiresAt < new Date()) {
     throw new AppError(
-      'Your verification code has expired. Please request a new one and try again.',
-      400,
+      "Your verification code has expired. Please request a new one and try again.",
+      400
     )
   }
 
   const isValidOtp = await compareHash(otp, verificationRequest?.otpHash)
 
   if (!isValidOtp) {
-    throw new AppError('The verification code you entered is incorrect. Please try again.', 400)
+    throw new AppError(
+      "The verification code you entered is incorrect. Please try again.",
+      400
+    )
   }
 
   prisma.verificationRequest.update({
@@ -132,7 +146,7 @@ export const generateVerificationIdService = async (
   name: string | null,
   email: string,
   password: string | null,
-  otp: string,
+  otp: string
 ): Promise<SendOtpOutput> => {
   const verification = await prisma.$transaction(async (tx) => {
     await tx.verificationRequest.deleteMany({
@@ -160,7 +174,7 @@ export const generateVerificationIdService = async (
 }
 
 export const getVerificationDetailService = async (
-  id: string,
+  id: string
 ): Promise<VerificationRequest | null> => {
   const verification = await prisma.verificationRequest.findUnique({
     where: {
@@ -172,7 +186,7 @@ export const getVerificationDetailService = async (
 
 export const updateVerificationIdService = async (
   id: string,
-  otp: string,
+  otp: string
 ): Promise<VerificationRequest | null> => {
   const verification = await prisma.verificationRequest.update({
     where: {
@@ -188,7 +202,9 @@ export const updateVerificationIdService = async (
   return verification
 }
 
-export const deleteVerificationDetailService = async (id: string): Promise<void> => {
+export const deleteVerificationDetailService = async (
+  id: string
+): Promise<void> => {
   await prisma.verificationRequest.delete({
     where: {
       id,

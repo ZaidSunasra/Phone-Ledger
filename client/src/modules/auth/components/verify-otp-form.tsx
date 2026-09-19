@@ -20,7 +20,7 @@ import {
   InputOTPSlot,
 } from "@/components/ui/input-otp"
 import { useParams } from "react-router"
-import { verifyOtpSchema, type VerifyOtpSchema } from "zs-phone-common"
+import { verifyOtpSchema, type VerifyOtpSchema } from "@phone-ledger/shared"
 import {
   useResendOtp,
   useVerifyEmail,

@@ -18,7 +18,7 @@ import type {
   LoginSuccessResponse,
   SendOtpSuccessResponse,
   SuccessResponse,
-} from "zs-phone-common"
+} from "@phone-ledger/shared"
 import { useShop } from "@/store/shop.store"
 import type { AxiosError } from "axios"
 

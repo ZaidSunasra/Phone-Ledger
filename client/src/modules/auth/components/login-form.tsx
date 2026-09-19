@@ -17,7 +17,7 @@ import { Input } from "@/components/ui/input"
 import { NavLink } from "react-router"
 import { useForm, Controller } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { loginSchema, type LoginSchema } from "zs-phone-common"
+import { loginSchema, type LoginSchema } from "@phone-ledger/shared"
 import { useLogin } from "@/api/auth/auth.mutation"
 
 const LoginForm = () => {

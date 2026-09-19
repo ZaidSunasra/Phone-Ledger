@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { addShop } from "./shop.api"
-import type { ErrorResponse, SuccessResponse } from "zs-phone-common"
+import type { ErrorResponse, SuccessResponse } from "@phone-ledger/shared"
 import { toast } from "sonner"
 import { useNavigate } from "react-router"
 import type { AxiosError } from "axios"

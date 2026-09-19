@@ -1,4 +1,4 @@
-import crypto from 'crypto'
+import crypto from "crypto"
 
 export function generateOtp(length = 6): string {
   const min = 10 ** (length - 1)

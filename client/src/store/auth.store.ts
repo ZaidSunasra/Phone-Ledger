@@ -1,4 +1,4 @@
-import type { LoginUser } from "zs-phone-common"
+import type { LoginUser } from "@phone-ledger/shared"
 import { create } from "zustand"
 import { persist } from "zustand/middleware"
 

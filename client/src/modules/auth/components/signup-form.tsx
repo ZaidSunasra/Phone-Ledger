@@ -18,7 +18,7 @@ import { Input } from "@/components/ui/input"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Controller, useForm } from "react-hook-form"
 import { NavLink } from "react-router"
-import { signupSchema, type SignupSchema } from "zs-phone-common"
+import { signupSchema, type SignupSchema } from "@phone-ledger/shared"
 
 const SignupForm = () => {
   const signup = useSignup()

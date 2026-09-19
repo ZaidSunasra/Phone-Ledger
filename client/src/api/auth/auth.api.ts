@@ -8,7 +8,7 @@ import type {
   SignupSchema,
   SuccessResponse,
   VerifyOtpSchema,
-} from "zs-phone-common"
+} from "@phone-ledger/shared"
 import axiosInstance from "../axiosInstance"
 
 export const login = async (

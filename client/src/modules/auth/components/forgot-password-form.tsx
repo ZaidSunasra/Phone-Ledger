@@ -19,7 +19,7 @@ import { Input } from "@/components/ui/input"
 import {
   forgotPasswordSchema,
   type ForgotPasswordSchema,
-} from "zs-phone-common"
+} from "@phone-ledger/shared"
 import { useForgotPassword } from "@/api/auth/auth.mutation"
 
 const ForgotPasswordForm = () => {

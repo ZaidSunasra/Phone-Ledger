@@ -17,7 +17,7 @@ import { Input } from "@/components/ui/input"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Controller, useForm } from "react-hook-form"
 import { useNavigate } from "react-router"
-import { addShopSchema, type AddShop } from "zs-phone-common"
+import { addShopSchema, type AddShop } from "@phone-ledger/shared"
 import { Textarea } from "@/components/ui/textarea"
 
 const CreateShop = () => {

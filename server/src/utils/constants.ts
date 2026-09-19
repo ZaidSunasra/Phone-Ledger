@@ -1,4 +1,4 @@
-import dotenv from 'dotenv'
+import dotenv from "dotenv"
 
 dotenv.config()
 
@@ -18,7 +18,7 @@ export const cookieOptions = (duration: number) => {
   return {
     maxAge: duration,
     httpOnly: true,
-    sameSite: 'lax' as 'lax',
+    sameSite: "lax" as "lax",
     secure: true,
   }
 }

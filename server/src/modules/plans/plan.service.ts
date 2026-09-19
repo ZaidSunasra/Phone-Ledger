@@ -1,17 +1,17 @@
-import { GetAllPlansOutput } from 'zs-phone-common'
-import { prisma } from '../../configs/prisma.js'
+import { GetAllPlansOutput } from "@phone-ledger/shared"
+import { prisma } from "../../configs/prisma.js"
 
 export const getAllPlansService = async (): Promise<GetAllPlansOutput> => {
   const plans = await prisma.plan.findMany({
     where: {
       code: {
         not: {
-          equals: 'FREE',
+          equals: "FREE",
         },
       },
     },
     orderBy: {
-      price: 'asc',
+      price: "asc",
     },
   })
 

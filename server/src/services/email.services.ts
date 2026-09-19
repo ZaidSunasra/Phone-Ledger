@@ -1,5 +1,5 @@
-import { EmailJobType } from 'zs-phone-common'
-import emailQueue from '../queues/email.queue.js'
+import { EmailJobType } from "@phone-ledger/shared"
+import emailQueue from "../queues/email.queue.js"
 
 interface SendEmailOptions {
   type: EmailJobType
@@ -17,12 +17,12 @@ const sendEmail = async ({ type, email, otp }: SendEmailOptions) => {
     {
       attempts: 3,
       backoff: {
-        type: 'exponential',
+        type: "exponential",
         delay: 3000,
       },
       removeOnComplete: 100,
       removeOnFail: 100,
-    },
+    }
   )
 }
 

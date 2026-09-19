@@ -1,4 +1,4 @@
-import type { AddShop, GetShopsSuccessResponse } from "zs-phone-common"
+import type { AddShop, GetShopsSuccessResponse } from "@phone-ledger/shared"
 import axiosInstance from "../axiosInstance"
 
 export const getShops = async (): Promise<GetShopsSuccessResponse> => {

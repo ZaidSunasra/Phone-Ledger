@@ -1,79 +1,97 @@
-import z from "zod/v4";
-import { SuccessResponse, VerificationRequest } from "./common.types";
-import { PlanCode } from "./enums";
+import z from "zod/v4"
+import { SuccessResponse, VerificationRequest } from "./common.types"
+import { PlanCode } from "./enums"
 
 const EmailJobType = ["verification-email", "forgot-password-email"]
 
 export const signupSchema = z.object({
-    name: z.string().min(2, "Name should be at least 2 character").max(30, "Name should not exceed 30 characters"),
-    email: z.email("Enter a valid email address"),
-    password: z.string().min(6, "Password should be greater than 6 characters")
-});
+  name: z
+    .string()
+    .min(2, "Name should be at least 2 character")
+    .max(30, "Name should not exceed 30 characters"),
+  email: z.email("Enter a valid email address"),
+  password: z.string().min(6, "Password should be greater than 6 characters"),
+})
 
 export const loginSchema = z.object({
-    email: z.email("Please enter a valid email address"),
-    password: z.string().min(1, "Password is required")
-});
+  email: z.email("Please enter a valid email address"),
+  password: z.string().min(1, "Password is required"),
+})
 
 export const forgotPasswordSchema = z.object({
-    email: z.email("Please enter a valid email address")
+  email: z.email("Please enter a valid email address"),
 })
 
-export const resetPasswordSchema = z.object({
+export const resetPasswordSchema = z
+  .object({
     password: z.string().min(6, "Password should be greater than 6 characters"),
-    confirmPassword: z.string().min(6, "Password should be greater than 6 characters")
-}).refine((data) => !(data.password && data.confirmPassword) || data.password === data.confirmPassword, {
-    message: "Passwords don't match",
-    path: ["confirmPassword"],
-})
+    confirmPassword: z
+      .string()
+      .min(6, "Password should be greater than 6 characters"),
+  })
+  .refine(
+    (data) =>
+      !(data.password && data.confirmPassword) ||
+      data.password === data.confirmPassword,
+    {
+      message: "Passwords don't match",
+      path: ["confirmPassword"],
+    }
+  )
 
 export const verifyOtpSchema = z.object({
-    otp: z.string().min(6, "OTP should be exactly of 6 characters").max(6, "OTP should be exactly of 6 characters")
+  otp: z
+    .string()
+    .min(6, "OTP should be exactly of 6 characters")
+    .max(6, "OTP should be exactly of 6 characters"),
 })
 
 export const resendOtpSchema = z.object({
-    type: z.enum(EmailJobType)
+  type: z.enum(EmailJobType),
 })
 
 export type SendOtpSuccessResponse = SuccessResponse & {
-    resendAvailableAt: Date
+  resendAvailableAt: Date
 }
 
 export type LoginUser = {
-    id: string,
-    name: string,
-    email: string,
-    currentPlan: PlanCode
+  id: string
+  name: string
+  email: string
+  currentPlan: PlanCode
 }
 
 export type LoginSuccessResponse = SuccessResponse & {
-    userData: LoginUser
-};
+  userData: LoginUser
+}
 
 export type LoginOutput = {
-    id: string;
-    name: string;
-    email: string;
-    password: string;
-    subscription: {
-        plan: {
-            code: PlanCode
-        }
-    }[]
-};
+  id: string
+  name: string
+  email: string
+  password: string
+  subscription: {
+    plan: {
+      code: PlanCode
+    }
+  }[]
+}
 
-export type SendOtpOutput = Pick<VerificationRequest, "resendAvailableAt" | "id">
+export type SendOtpOutput = Pick<
+  VerificationRequest,
+  "resendAvailableAt" | "id"
+>
 
-export type SignupSchema = z.infer<typeof signupSchema>;
+export type SignupSchema = z.infer<typeof signupSchema>
 
-export type LoginSchema = z.infer<typeof loginSchema>;
+export type LoginSchema = z.infer<typeof loginSchema>
 
-export type ForgotPasswordSchema = z.infer<typeof forgotPasswordSchema>;
+export type ForgotPasswordSchema = z.infer<typeof forgotPasswordSchema>
 
-export type VerifyOtpSchema = z.infer<typeof verifyOtpSchema>;
+export type VerifyOtpSchema = z.infer<typeof verifyOtpSchema>
 
-export type ResetPasswordSchema = z.infer<typeof resetPasswordSchema>;
+export type ResetPasswordSchema = z.infer<typeof resetPasswordSchema>
 
-export type ResendOtpSchema = z.infer<typeof resendOtpSchema>;
+export type ResendOtpSchema = z.infer<typeof resendOtpSchema>
 
-export type EmailJobType = typeof EmailJobType[number];
+export type EmailJobType = (typeof EmailJobType)[number]

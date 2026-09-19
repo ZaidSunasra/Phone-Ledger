@@ -1,12 +1,12 @@
-import { NextFunction, Request, Response } from 'express'
-import { Author, ErrorResponse } from 'zs-phone-common'
-import { AppError } from '../utils/appError.js'
-import { prisma } from '../configs/prisma.js'
+import { NextFunction, Request, Response } from "express"
+import { Author, ErrorResponse } from "@phone-ledger/shared"
+import { AppError } from "../utils/appError.js"
+import { prisma } from "../configs/prisma.js"
 
 const checkSubscription = async (
   _req: Request,
   res: Response<ErrorResponse>,
-  next: NextFunction,
+  next: NextFunction
 ): Promise<any> => {
   try {
     const author: Author = res.locals.author
@@ -14,13 +14,13 @@ const checkSubscription = async (
     const activeSubscription = await prisma.subscription.findFirst({
       where: {
         userId: author.id,
-        status: 'ACTIVE',
+        status: "ACTIVE",
         endsAt: {
           gt: new Date(),
         },
       },
       orderBy: {
-        endsAt: 'desc',
+        endsAt: "desc",
       },
       include: {
         plan: true,
@@ -29,8 +29,8 @@ const checkSubscription = async (
 
     if (!activeSubscription) {
       throw new AppError(
-        'You dont have an active subscription. Please renew your subscription',
-        403,
+        "You dont have an active subscription. Please renew your subscription",
+        403
       )
     }
 

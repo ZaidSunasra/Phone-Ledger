@@ -1,5 +1,5 @@
-import type { NextFunction, Request, Response } from 'express'
-import jwt from 'jsonwebtoken'
+import type { NextFunction, Request, Response } from "express"
+import jwt from "jsonwebtoken"
 import {
   forgotPasswordSchema,
   loginSchema,
@@ -12,7 +12,7 @@ import {
   SuccessResponse,
   LoginSuccessResponse,
   Author,
-} from 'zs-phone-common'
+} from "@phone-ledger/shared"
 import {
   addUserService,
   deleteVerificationDetailService,
@@ -22,18 +22,18 @@ import {
   resetPasswordService,
   updateVerificationIdService,
   verifyOtpService,
-} from './auth.service.js'
-import { generateOtp } from '../../utils/generateOtp.js'
-import { compareHash, hashValue } from '../../utils/bcrypt.js'
-import sendEmail from '../../services/email.services.js'
-import { JWT_SECRET } from '../../utils/constants.js'
-import { AppError } from '../../utils/appError.js'
-import { cookieOptions } from '../../utils/constants.js'
+} from "./auth.service.js"
+import { generateOtp } from "../../utils/generateOtp.js"
+import { compareHash, hashValue } from "../../utils/bcrypt.js"
+import sendEmail from "../../services/email.services.js"
+import { JWT_SECRET } from "../../utils/constants.js"
+import { AppError } from "../../utils/appError.js"
+import { cookieOptions } from "../../utils/constants.js"
 
 export const verifyEmailController = async (
   req: Request,
   res: Response<SuccessResponse | ErrorResponse>,
-  next: NextFunction,
+  next: NextFunction
 ): Promise<any> => {
   const { otp } = req.body
   const verificationId = req.cookies.verificationId
@@ -41,7 +41,7 @@ export const verifyEmailController = async (
   const validation = verifyOtpSchema.safeParse(req.body)
   if (!validation.success) {
     return res.status(400).json({
-      message: 'Input validation error',
+      message: "Input validation error",
       error: validation.error.issues,
     })
   }
@@ -56,10 +56,10 @@ export const verifyEmailController = async (
     })
 
     await deleteVerificationDetailService(verificationId)
-    res.clearCookie('verificationId')
+    res.clearCookie("verificationId")
 
     return res.status(200).json({
-      message: 'Account created successfully. Please login to your account',
+      message: "Account created successfully. Please login to your account",
     })
   } catch (error) {
     next(error)
@@ -69,13 +69,13 @@ export const verifyEmailController = async (
 export const signupController = async (
   req: Request,
   res: Response<SendOtpSuccessResponse | ErrorResponse>,
-  next: NextFunction,
+  next: NextFunction
 ): Promise<any> => {
   const { name, email, password } = req.body
   const validation = signupSchema.safeParse(req.body)
   if (!validation.success) {
     return res.status(400).json({
-      message: 'Input validation error',
+      message: "Input validation error",
       error: validation.error.issues,
     })
   }
@@ -85,8 +85,8 @@ export const signupController = async (
 
     if (existingUser) {
       throw new AppError(
-        'An account with this email address already exists. Please sign in or use a different email address.',
-        409,
+        "An account with this email address already exists. Please sign in or use a different email address.",
+        409
       )
     }
 
@@ -99,15 +99,19 @@ export const signupController = async (
       name,
       email,
       hashedPassword,
-      hashedOtp,
+      hashedOtp
     )
 
-    sendEmail({ type: 'verification-email', email, otp })
+    sendEmail({ type: "verification-email", email, otp })
 
-    res.cookie('verificationId', verificationId.id, cookieOptions(10 * 60 * 1000))
+    res.cookie(
+      "verificationId",
+      verificationId.id,
+      cookieOptions(10 * 60 * 1000)
+    )
 
     return res.status(200).json({
-      message: 'Verification code has been sent to your email address.',
+      message: "Verification code has been sent to your email address.",
       resendAvailableAt: verificationId.resendAvailableAt,
     })
   } catch (error) {
@@ -118,14 +122,14 @@ export const signupController = async (
 export const loginController = async (
   req: Request,
   res: Response<LoginSuccessResponse | ErrorResponse>,
-  next: NextFunction,
+  next: NextFunction
 ): Promise<any> => {
   const { email, password } = req.body
 
   const validation = loginSchema.safeParse(req.body)
   if (!validation.success) {
     return res.status(400).json({
-      message: 'Input validation error',
+      message: "Input validation error",
       error: validation.error.issues,
     })
   }
@@ -135,15 +139,15 @@ export const loginController = async (
 
     if (!user) {
       throw new AppError(
-        'No account was found with this email address. Please check the email or create a new account.',
-        404,
+        "No account was found with this email address. Please check the email or create a new account.",
+        404
       )
     }
 
     const checkPassword = await compareHash(password, user.password)
 
     if (!checkPassword) {
-      throw new AppError('Incorrect password. Please try again.', 401)
+      throw new AppError("Incorrect password. Please try again.", 401)
     }
 
     const token = jwt.sign(
@@ -152,19 +156,19 @@ export const loginController = async (
       },
       JWT_SECRET as string,
       {
-        expiresIn: '1d',
-      },
+        expiresIn: "1d",
+      }
     )
 
-    res.cookie('Token', token, cookieOptions(24 * 60 * 60 * 1000))
+    res.cookie("Token", token, cookieOptions(24 * 60 * 60 * 1000))
 
     return res.status(200).json({
-      message: 'Login successful',
+      message: "Login successful",
       userData: {
         name: user.name,
         email: user.email,
         id: user.id,
-        currentPlan: user.subscription[0]?.plan?.code ?? 'NO PLAN',
+        currentPlan: user.subscription[0]?.plan?.code ?? "NO PLAN",
       },
     })
   } catch (error) {
@@ -175,14 +179,14 @@ export const loginController = async (
 export const forgotPasswordController = async (
   req: Request,
   res: Response<SendOtpSuccessResponse | ErrorResponse>,
-  next: NextFunction,
+  next: NextFunction
 ): Promise<any> => {
   const { email } = req.body
 
   const validation = forgotPasswordSchema.safeParse(req.body)
   if (!validation.success) {
     return res.status(400).json({
-      message: 'Input validation error',
+      message: "Input validation error",
       error: validation.error.issues,
     })
   }
@@ -192,8 +196,8 @@ export const forgotPasswordController = async (
 
     if (!user) {
       throw new AppError(
-        'No account was found with this email address. Please check the email or create a new account.',
-        404,
+        "No account was found with this email address. Please check the email or create a new account.",
+        404
       )
     }
 
@@ -201,14 +205,23 @@ export const forgotPasswordController = async (
 
     const hashedOtp = await hashValue(otp, 10)
 
-    const verificationId = await generateVerificationIdService(null, email, null, hashedOtp)
+    const verificationId = await generateVerificationIdService(
+      null,
+      email,
+      null,
+      hashedOtp
+    )
 
-    sendEmail({ type: 'forgot-password-email', email, otp })
+    sendEmail({ type: "forgot-password-email", email, otp })
 
-    res.cookie('verificationId', verificationId.id, cookieOptions(10 * 60 * 1000))
+    res.cookie(
+      "verificationId",
+      verificationId.id,
+      cookieOptions(10 * 60 * 1000)
+    )
 
     return res.status(200).json({
-      message: 'Verification code has been sent to your email address.',
+      message: "Verification code has been sent to your email address.",
       resendAvailableAt: verificationId.resendAvailableAt,
     })
   } catch (error) {
@@ -219,7 +232,7 @@ export const forgotPasswordController = async (
 export const verifyResetOtpController = async (
   req: Request,
   res: Response<SuccessResponse | ErrorResponse>,
-  next: NextFunction,
+  next: NextFunction
 ): Promise<any> => {
   const { otp } = req.body
   const verificationId = req.cookies.verificationId
@@ -227,7 +240,7 @@ export const verifyResetOtpController = async (
   const validation = verifyOtpSchema.safeParse(req.body)
   if (!validation.success) {
     return res.status(400).json({
-      message: 'Input validation error',
+      message: "Input validation error",
       error: validation.error.issues,
     })
   }
@@ -236,7 +249,7 @@ export const verifyResetOtpController = async (
     await verifyOtpService(otp, verificationId)
 
     return res.status(200).json({
-      message: 'OTP verified successfully. Please set a new password.',
+      message: "OTP verified successfully. Please set a new password.",
     })
   } catch (error) {
     next(error)
@@ -246,14 +259,14 @@ export const verifyResetOtpController = async (
 export const resetPasswordController = async (
   req: Request,
   res: Response<SuccessResponse | ErrorResponse>,
-  next: NextFunction,
+  next: NextFunction
 ): Promise<any> => {
   const verificationId = req.cookies.verificationId
 
   const validation = resetPasswordSchema.safeParse(req.body)
   if (!validation.success) {
     return res.status(400).json({
-      message: 'Input validation error',
+      message: "Input validation error",
       error: validation.error.issues,
     })
   }
@@ -264,10 +277,11 @@ export const resetPasswordController = async (
     await resetPasswordService(hashedPassword, verificationId)
 
     await deleteVerificationDetailService(verificationId)
-    res.clearCookie('verificationId')
+    res.clearCookie("verificationId")
 
     return res.status(200).json({
-      message: 'Your password has been changed successfully. Please log in with your new password.',
+      message:
+        "Your password has been changed successfully. Please log in with your new password.",
     })
   } catch (error) {
     next(error)
@@ -277,7 +291,7 @@ export const resetPasswordController = async (
 export const resendOtpController = async (
   req: Request,
   res: Response<SendOtpSuccessResponse | ErrorResponse>,
-  next: NextFunction,
+  next: NextFunction
 ): Promise<any> => {
   const verificationId = req.cookies.verificationId
   const { type } = req.body
@@ -285,7 +299,7 @@ export const resendOtpController = async (
   const validation = resendOtpSchema.safeParse(req.body)
   if (!validation.success) {
     return res.status(400).json({
-      message: 'Input validation error',
+      message: "Input validation error",
       error: validation.error.issues,
     })
   }
@@ -297,15 +311,21 @@ export const resendOtpController = async (
     const verificationData = await getVerificationDetailService(verificationId)
 
     if (new Date() < verificationData?.resendAvailableAt!) {
-      throw new AppError('Please wait a minute before requesting a new verification code.', 500)
+      throw new AppError(
+        "Please wait a minute before requesting a new verification code.",
+        500
+      )
     }
 
-    const verfication = await updateVerificationIdService(verificationId, hashedOtp)
+    const verfication = await updateVerificationIdService(
+      verificationId,
+      hashedOtp
+    )
 
     sendEmail({ type: type, email: verificationData?.email!, otp })
 
     return res.status(200).json({
-      message: 'Verification code has been re-sent to your email address.',
+      message: "Verification code has been re-sent to your email address.",
       resendAvailableAt: verfication?.resendAvailableAt,
     })
   } catch (error) {
@@ -316,21 +336,21 @@ export const resendOtpController = async (
 export const getMeController = async (
   _req: Request,
   res: Response<LoginSuccessResponse | ErrorResponse>,
-  next: NextFunction,
+  next: NextFunction
 ): Promise<any> => {
   const author: Author = res.locals.author
   try {
     const user = await findExistingEmailService(author.email)
     if (!user) {
-      throw new AppError('', 401)
+      throw new AppError("", 401)
     }
     return res.status(200).json({
-      message: 'Details fetched successfully',
+      message: "Details fetched successfully",
       userData: {
         name: user?.name,
         email: user?.email,
         id: user.id,
-        currentPlan: user.subscription[0]?.plan?.code ?? 'NO PLAN',
+        currentPlan: user.subscription[0]?.plan?.code ?? "NO PLAN",
       },
     })
   } catch (error) {
@@ -341,12 +361,12 @@ export const getMeController = async (
 export const logoutController = async (
   _req: Request,
   res: Response<SuccessResponse | ErrorResponse>,
-  next: NextFunction,
+  next: NextFunction
 ): Promise<any> => {
   try {
-    res.clearCookie('Token')
+    res.clearCookie("Token")
     return res.status(200).send({
-      message: 'Logout successful',
+      message: "Logout successful",
     })
   } catch (error) {
     next(error)
