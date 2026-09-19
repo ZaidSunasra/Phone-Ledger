@@ -12,7 +12,7 @@
     "build": "tsc && node dist/src/index.js",
     "worker": "nodemon dist/src/workers/worker.js",
     "lint": "oxlint",
-    "lint:fix": "oxlint . --fix",
+    "lint:fix": "oxlint --fix .",
     "format": "prettier --write .",
     "format:check": "prettier --check ."
   },
@@ -32,7 +32,7 @@
     "nodemailer": "^9.0.3",
     "razorpay": "^2.9.8",
     "zod": "^4.4.3",
-    "zs-phone-common": "^1.0.17"
+    "@phone-ledger/shared": "workspace:*"
   },
   "devDependencies": {
     "@types/cookie-parser": "^1.4.10",
@@ -41,8 +41,6 @@
     "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^26.1.1",
     "@types/nodemailer": "^8.0.1",
-    "oxlint": "^1.82.0",
-    "prettier": "^3.9.6",
     "prisma": "^7.9.1"
   },
   "allowScripts": {

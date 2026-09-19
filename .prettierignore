@@ -1,0 +1,13 @@
+dist/
+node_modules/
+.turbo/
+coverage/
+pnpm-lock.yaml
+.pnpm-store/
+build
+.next
+.vite
+.turbo
+.cache
+*.min.js
+server/src/generated

@@ -1,0 +1,9 @@
+packages:
+  - "client"
+  - "server"
+  - "shared"
+  
+allowBuilds:
+  '@prisma/engines': true
+  msgpackr-extract: true
+  prisma: true
