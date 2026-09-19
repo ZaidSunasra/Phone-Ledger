@@ -1,11 +1,11 @@
-const PlanCode = {
+export const PlanCode = {
   FREE: "FREE",
   BASIC_MONTHLY: "BASIC_MONTHLY",
   BASIC_YEARLY: "BASIC_YEARLY",
 } as const
 export type PlanCode = (typeof PlanCode)[keyof typeof PlanCode]
 
-const SubscriptionStatus = {
+export const SubscriptionStatus = {
   ACTIVE: "ACTIVE",
   CANCELLED: "CANCELLED",
   EXPIRED: "EXPIRED",

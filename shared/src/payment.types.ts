@@ -1,6 +1,6 @@
 import { z } from "zod/v4"
-import { SuccessResponse } from "./common.types"
-import { PaymentStatus } from "./enums"
+import type { SuccessResponse } from "./common.types.js"
+import type { PaymentStatus } from "./enums.js"
 
 export const createPaymentOrderSchema = z.object({
   planId: z.uuid("Invalid Plan Id"),

@@ -1,4 +1,4 @@
-import { PlanCode, SubscriptionStatus } from "./enums"
+import type { PlanCode, SubscriptionStatus } from "./enums.js"
 
 export type User = {
   name: string

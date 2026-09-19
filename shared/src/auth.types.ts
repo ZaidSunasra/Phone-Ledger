@@ -1,6 +1,6 @@
 import z from "zod/v4"
-import { SuccessResponse, VerificationRequest } from "./common.types"
-import { PlanCode } from "./enums"
+import type { SuccessResponse, VerificationRequest } from "./common.types.js"
+import type { PlanCode } from "./enums.js"
 
 const EmailJobType = ["verification-email", "forgot-password-email"]
 

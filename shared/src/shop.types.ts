@@ -1,6 +1,6 @@
 import z from "zod/v4"
-import { SuccessResponse } from "./common.types"
-import { ShopRole } from "./enums"
+import type { SuccessResponse } from "./common.types.js"
+import type { ShopRole } from "./enums.js"
 
 export const addShopSchema = z.object({
   name: z

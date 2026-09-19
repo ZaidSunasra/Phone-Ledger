@@ -1,4 +1,4 @@
-import { Plan, Subscription, SuccessResponse } from "./common.types"
+import type { Plan, Subscription, SuccessResponse } from "./common.types.js"
 
 export type ActiveSubscription = Subscription & {
   plan: Plan
