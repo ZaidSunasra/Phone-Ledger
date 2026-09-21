@@ -24,7 +24,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { LogOut, ChevronsUpDown, Repeat2, SparklesIcon } from "lucide-react"
 import { useLogout } from "@/api/auth/auth.mutation"
-import { useNavigate } from "react-router"
+import { NavLink, useNavigate } from "react-router"
 
 const AppSidebar = () => {
   const user = useAuth((state) => state.user)
@@ -48,7 +48,7 @@ const AppSidebar = () => {
               <SidebarMenuItem key={item.title}>
                 <SidebarMenuButton>
                   {<item.icon />}
-                  <a href={item.url}>{item.title}</a>
+                  <NavLink to={item.url}>{item.title}</NavLink>
                 </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>
