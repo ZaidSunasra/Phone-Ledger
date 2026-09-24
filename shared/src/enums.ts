@@ -28,3 +28,21 @@ export const ShopRole = {
   EMPLOYEE: "EMPLOYEE",
 } as const
 export type ShopRole = (typeof ShopRole)[keyof typeof ShopRole]
+
+export const InventoryStatus = {
+  IN_STOCK: "IN_STOCK",
+  SOLD: "SOLD",
+} as const
+export type InventoryStatus =
+  (typeof InventoryStatus)[keyof typeof InventoryStatus]
+
+export const PaymentMethod = {
+  CASH: "CASH",
+  UPI: "UPI",
+  CARD: "CARD",
+  BANK_TRANSFER: "BANK_TRANSFER",
+  CHEQUE: "CHEQUE",
+  FINANCE: "FINANCE",
+  OTHER: "OTHER",
+}
+export type PaymentMethod = (typeof PaymentMethod)[keyof typeof PaymentMethod]

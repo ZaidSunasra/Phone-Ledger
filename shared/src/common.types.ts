@@ -1,4 +1,10 @@
-import type { PlanCode, SubscriptionStatus } from "./enums.js"
+import type {
+  InventoryStatus,
+  PaymentMethod,
+  PlanCode,
+  ShopRole,
+  SubscriptionStatus,
+} from "./enums.js"
 
 export type User = {
   name: string
@@ -45,6 +51,67 @@ export type Plan = {
   billingDays: number
   maxShops: number
   maxMembers: number
+}
+
+export type InventoryDevice = {
+  id: string
+  shopId: string
+  brandId: number
+  name: string
+  colour: string
+  imei1: string
+  imei2: string | null
+  storage: number | null
+  ram: number | null
+  sellerId: string
+  buyPrice: number
+  buyDate: Date
+  status: InventoryStatus
+  createdAt: Date
+  updatedAt: Date
+}
+
+export type SalePayment = {
+  id: string
+  createdAt: Date
+  saleId: string
+  amount: Number
+  paidAt: Date
+  method: PaymentMethod
+  referenceNumber: string | null
+  notes: string | null
+}
+
+export type DeviceSale = {
+  id: string
+  createdAt: Date
+  updatedAt: Date
+  deviceId: string
+  buyerId: string
+  sellPrice: Number
+  sellDate: Date
+}
+
+export type Membership = {
+  userId: string
+  shopId: string
+  role: ShopRole
+  joinedAt: Date
+}
+
+export type Customer = {
+  id: string
+  shopId: string
+  name: string
+  aadharNumber: string
+  phoneNumber: string | null
+  createdAt: Date
+  updatedAt: Date
+}
+
+export type Brand = {
+  id: number
+  name: string
 }
 
 export type SuccessResponse = {
