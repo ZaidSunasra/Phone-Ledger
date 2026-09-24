@@ -25,6 +25,7 @@ export const useFetchSummary = () => {
   return useQuery({
     queryKey: ["inventory-summary"],
     queryFn: getInventorySummary,
+    staleTime: 15 * 60 * 1000,
   })
 }
 
