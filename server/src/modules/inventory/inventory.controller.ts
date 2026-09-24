@@ -72,7 +72,6 @@ export const getDevicesController = async (
   }
 
   try {
-    console.log("Devices Controller reached")
     const devices = await getDevicesService(membership, query)
 
     res.status(200).json({
