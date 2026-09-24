@@ -13,13 +13,13 @@ export const navData = [
     url: "/dashboard",
   },
   {
-    icon: IndianRupee,
-    title: "Sales",
-    url: "/dashboard",
-  },
-  {
     icon: Boxes,
     title: "Inventory",
+    url: "/inventory",
+  },
+  {
+    icon: IndianRupee,
+    title: "Sales",
     url: "/dashboard",
   },
   {

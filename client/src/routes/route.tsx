@@ -19,6 +19,9 @@ const ResetPasswordPage = lazy(
 const ForgotPasswordPage = lazy(
   () => import("@/modules/auth/pages/forgot-password-page")
 )
+const InventoryPage = lazy(
+  () => import("@/modules/inventory/pages/inventory-page")
+)
 
 const Router = () => {
   return (
@@ -35,6 +38,7 @@ const Router = () => {
         <Route path="/add-shop" element={<CreateShop />} />
         <Route path="/upgrade-plan" element={<SelectPlanPage />} />
         <Route path="/payment-failed" element={<PaymentFailedPage />} />
+        <Route path="/inventory" element={<InventoryPage />} />
       </Routes>
     </BrowserRouter>
   )
