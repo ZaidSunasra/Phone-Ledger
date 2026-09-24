@@ -4,7 +4,7 @@ import {
   useVerifyPayment,
 } from "@/api/payment/payment.mutation"
 import { loadRazorpayCheckoutScript } from "@/modules/payment/utils/payment.utils"
-import { FetchPlans } from "@/api/plans/plan.queries"
+import { useFetchPlans } from "@/api/plans/plan.queries"
 import PricingCard from "../components/pricing-card"
 import { useAuth } from "@/store/auth.store"
 import { useNavigate } from "react-router"
@@ -12,7 +12,7 @@ import { useQueryClient } from "@tanstack/react-query"
 
 const SelectPlanPage = () => {
   const queryClient = useQueryClient()
-  const { data, isPending, isError } = FetchPlans()
+  const { data, isPending, isError } = useFetchPlans()
   const { mutateAsync: createOrder, isPending: isCreatingOrder } =
     useCreatePaymentOrder()
   const { mutateAsync: verifyPayment, isPending: isVerifyingPayment } =
