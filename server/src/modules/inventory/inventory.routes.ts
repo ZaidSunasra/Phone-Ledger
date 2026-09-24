@@ -21,7 +21,7 @@ inventoryRouter.post(
 )
 inventoryRouter.get("/", authenticate, checkMemberShip, getDevicesController)
 inventoryRouter.get(
-  "/:deviceId",
+  "/device/:deviceId",
   authenticate,
   checkMemberShip,
   getDeviceByIdController
@@ -33,7 +33,7 @@ inventoryRouter.get(
   getInventorySummaryController
 )
 inventoryRouter.delete(
-  "/:deviceId",
+  "/device/:deviceId",
   authenticate,
   checkSubscription,
   checkMemberShip,

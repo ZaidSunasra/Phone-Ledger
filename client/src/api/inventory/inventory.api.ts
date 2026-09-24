@@ -19,7 +19,7 @@ export const getDevices = async (
 export const getDeviceById = async (
   deviceId: string
 ): Promise<GetDeviceByIdSuccessResponse> => {
-  const response = await axiosInstance.get(`/inventory/${deviceId}`)
+  const response = await axiosInstance.get(`/inventory/device/${deviceId}`)
   return response.data
 }
 
@@ -37,7 +37,7 @@ export const addDevcie = async (data: AddDevice): Promise<SuccessResponse> => {
 export const deleteDevice = async (
   deviceId: string
 ): Promise<SuccessResponse> => {
-  const response = await axiosInstance.delete(`/inventory/${deviceId}`)
+  const response = await axiosInstance.delete(`/inventory/device/${deviceId}`)
   return response.data
 }
 
