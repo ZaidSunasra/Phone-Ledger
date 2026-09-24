@@ -9,7 +9,7 @@ import {
 } from "@phone-ledger/shared"
 import { prisma } from "../../configs/prisma.js"
 import { AppError } from "../../utils/appError.js"
-import { startOfMonth } from "date-fns"
+import { startOfMonth, subMonths } from "date-fns"
 import { Prisma } from "../../generated/prisma/client.js"
 
 export const addDeviceService = async (
@@ -179,7 +179,13 @@ export const getDeviceByIdService = async (
 export const getInventorySummaryService = async (
   membership: Membership
 ): Promise<GetInventorySummaryOutput> => {
-  const [summary, addedThisMonth] = await prisma.$transaction([
+  const now = new Date()
+
+  const currentMonthStart = startOfMonth(now)
+  const previousMonthStart = startOfMonth(subMonths(now, 1))
+  const previousMonthSameTime = subMonths(now, 1)
+
+  const [summary, addedThisMonth, addedLastMonth] = await prisma.$transaction([
     prisma.inventoryDevice.aggregate({
       where: {
         shopId: membership.shopId,
@@ -196,17 +202,34 @@ export const getInventorySummaryService = async (
     prisma.inventoryDevice.count({
       where: {
         shopId: membership.shopId,
-        status: "IN_STOCK",
         createdAt: {
-          gte: startOfMonth(new Date()),
+          gte: currentMonthStart,
+          lte: now,
+        },
+      },
+    }),
+
+    prisma.inventoryDevice.count({
+      where: {
+        shopId: membership.shopId,
+        createdAt: {
+          gte: previousMonthStart,
+          lte: previousMonthSameTime,
         },
       },
     }),
   ])
+
+  const addedPercentageChange =
+    addedLastMonth === 0
+      ? null
+      : ((addedThisMonth - addedLastMonth) / addedLastMonth) * 100
+
   return {
     totalInventory: summary._count._all,
     inventoryCost: summary._sum.buyPrice?.toNumber() ?? 0,
     addedThisMonth,
+    addedPercentageChange,
   }
 }
 

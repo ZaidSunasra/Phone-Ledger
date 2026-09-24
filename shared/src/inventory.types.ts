@@ -92,6 +92,7 @@ export type GetInventorySummaryOutput = {
   totalInventory: number
   inventoryCost: number
   addedThisMonth: number
+  addedPercentageChange: number | null
 }
 
 export type GetInventorySummarySuccessResponse = SuccessResponse & {
