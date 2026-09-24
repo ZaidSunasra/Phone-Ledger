@@ -154,9 +154,8 @@ model ShopMember {
 }
 
 model Customer {
-  id     String @id @default(uuid()) @db.Uuid
-  shopId String @db.Uuid
-
+  id           String  @id @default(uuid()) @db.Uuid
+  shopId       String  @db.Uuid
   name         String
   aadharNumber String
   phoneNumber  String?
@@ -164,7 +163,7 @@ model Customer {
   shop Shop @relation(fields: [shopId], references: [id], onDelete: Cascade)
 
   dealsAsSeller InventoryDevice[] @relation("Seller")
-  dealsAsBuyer  InventoryDevice[] @relation("Buyer")
+  dealsAsBuyer  DeviceSale[]      @relation("Buyer")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -175,45 +174,81 @@ model Customer {
 }
 
 model InventoryDevice {
-  id     String @id @default(uuid()) @db.Uuid
-  shopId String @db.Uuid
-
+  id      String @id @default(uuid()) @db.Uuid
+  shopId  String @db.Uuid
   brandId Int
 
-  name   String
-  colour String
-
-  imei1 String
-  imei2 String?
-
+  name    String
+  colour  String
+  imei1   String
+  imei2   String?
   storage Int?
   ram     Int?
 
-  sellerId String  @db.Uuid
-  buyerId  String? @db.Uuid
+  sellerId String @db.Uuid
 
-  buyPrice  Decimal  @db.Decimal(10, 2)
-  sellPrice Decimal? @db.Decimal(10, 2)
-
+  buyPrice Decimal  @db.Decimal(10, 2)
   buyDate  DateTime
-  sellDate DateTime?
 
   status InventoryStatus @default(IN_STOCK)
 
-  shop Shop @relation(fields: [shopId], references: [id], onDelete: Cascade)
-
-  brand Brand @relation(fields: [brandId], references: [id])
-
+  shop   Shop     @relation(fields: [shopId], references: [id], onDelete: Cascade)
+  brand  Brand    @relation(fields: [brandId], references: [id])
   seller Customer @relation("Seller", fields: [sellerId], references: [id])
 
-  buyer Customer? @relation("Buyer", fields: [buyerId], references: [id])
+  sale DeviceSale?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([shopId])
   @@index([sellerId])
+  @@index([imei1])
+}
+
+model DeviceSale {
+  id String @id @default(uuid()) @db.Uuid
+
+  deviceId String @unique @db.Uuid
+  buyerId  String @db.Uuid
+
+  sellPrice Decimal @db.Decimal(10, 2)
+
+  sellDate DateTime @default(now())
+
+  device InventoryDevice @relation(fields: [deviceId], references: [id], onDelete: Cascade)
+
+  buyer Customer @relation("Buyer", fields: [buyerId], references: [id])
+
+  payments SalePayment[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
   @@index([buyerId])
+  @@index([sellDate])
+}
+
+model SalePayment {
+  id String @id @default(uuid()) @db.Uuid
+
+  saleId String @db.Uuid
+
+  amount Decimal @db.Decimal(10, 2)
+
+  paidAt DateTime @default(now())
+
+  method PaymentMethod
+
+  referenceNumber String?
+  notes           String?
+
+  sale DeviceSale @relation(fields: [saleId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@index([saleId])
+  @@index([paidAt])
 }
 
 model Brand {
@@ -272,4 +307,14 @@ enum ShopRole {
 enum InventoryStatus {
   IN_STOCK
   SOLD
+}
+
+enum PaymentMethod {
+  CASH
+  UPI
+  CARD
+  BANK_TRANSFER
+  CHEQUE
+  FINANCE
+  OTHER
 }
